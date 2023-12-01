@@ -12,3 +12,13 @@ Modificação 25/11
 ![Alt text](images/tela-bt.png)
 
 - Add: bootstrap.min.css
+
+##
+
+Modificação 01/12
+- Add: Função para os Botões para as páginas correspondente
+![Alt text](image.png)
+![Alt text](image-1.png)
+
+- Add: Quando um desses links é clicado, ele anima a rolagem para a seção correspondente usando a opção behavior: 'smooth'. Assim criando o efeito deslizante
+![Alt text](efeito-deslizante.gif)
