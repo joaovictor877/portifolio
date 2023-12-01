@@ -275,8 +275,8 @@ section.trabalhos .flex {
     background-position: 100% 0%;
     transition: 7s;
     cursor: pointer;
-    border-radius: 40px;
-    margin: 0 auto; /* Espaçamento entre as imagens */
+    border-radius: 30px;
+    margin: 40px; /* Espaçamento entre as imagens */
 }
 
 .img-trabalho:hover, .img-trabalho1:hover {
@@ -413,10 +413,11 @@ section.trabalhos .flex {
 
 /* Estilo para as redes sociais */
 .redes-socias {
+    
     display: flex;
     justify-content: center;
     margin-top: 30px;
-    margin: 30px;
+    margin: 30px;   
 }
 
 .redes-socias a {
