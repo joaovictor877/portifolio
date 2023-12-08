@@ -1,5 +1,4 @@
 /* slider-es animação em carrosel tech */
-
 let count = 1;
 document.getElementById("radio1").checked = true;
 
