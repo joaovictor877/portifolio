@@ -30,7 +30,7 @@ Modificação 01/12
 ##
 
 Modificação 08/12
-- Add: Botão que muda o visual do site para modo escuro e modo normal
+- **Add:** Botão que muda o visual do site para modo escuro e modo normal
 
     ![Alt text](images/toggle%20mode.gif)
 
@@ -45,3 +45,112 @@ Modificação 08/12
 - Como Ficou:
 
 ![Alt text](images/image-6.png)
+
+##
+
+Modificação 12/12
+
+**- Add:** Efeito RGB Animado
+
+O código CSS abaixo cria um efeito RGB animado, ideal para indicar processos de carregamento de forma estilizada e moderna. A classe "loading" contém barras verticais que apresentam uma transição dinâmica entre as cores preta e verde. A animação é aprimorada com o uso de sombras, rotações e um cálculo de atraso para criar um efeito pulsante cativante.
+
+```css
+.loading {
+    position: relative;
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    align-items: center;
+    height: 4vh;
+}
+
+.loading span {
+    position: relative;
+    width: 5px;
+    height: 20px;
+    background: #000;
+}
+
+.loading span::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    animation: animate 8s linear infinite;
+    animation-delay: calc(var(--i) * 0.1s);
+}
+
+@keyframes animate {
+    0% {
+        background: #0f0;
+        box-shadow: 0 0 5px #0f0, 0 0 15px #0f0, 0 0 30px #0f0, 0 0 50px #0f0;
+        transform: rotate(0deg);
+    }
+    // ... (outros estágios da animação)
+    90.1%, 100% {
+        background: #000;
+        box-shadow: none;
+    }
+}
+
+```
+HTML:
+```html
+<!-- Efeito RGB Final -->
+<div class="loading">
+    <span style="--i:1;"></span>
+    <span style="--i:2;"></span>
+    <span style="--i:3;"></span>
+    <span style="--i:4;"></span>
+    <span style="--i:5;"></span>
+    <span style="--i:6;"></span>
+    <span style="--i:7;"></span>
+    <span style="--i:8;"></span>
+    <span style="--i:9;"></span>
+    <span style="--i:10;"></span>
+    <span style="--i:11;"></span>
+    <span style="--i:12;"></span>
+    <span style="--i:13;"></span>
+    <span style="--i:14;"></span>
+    <span style="--i:15;"></span>
+    <span style="--i:16;"></span>
+    <span style="--i:17;"></span>
+    <span style="--i:18;"></span>
+    <span style="--i:19;"></span>
+    <span style="--i:20;"></span>
+</div>
+<!-- Fim do Efeito RGB -->
+
+```
+```markdown
+<!-- Efeito RGB Final -->
+<div class="loading">
+    <span style="--i:1;"></span>
+    <span style="--i:2;"></span>
+    <span style="--i:3;"></span>
+    <span style="--i:4;"></span>
+    <span style="--i:5;"></span>
+    <span style="--i:6;"></span>
+    <span style="--i:7;"></span>
+    <span style="--i:8;"></span>
+    <span style="--i:9;"></span>
+    <span style="--i:10;"></span>
+    <span style="--i:11;"></span>
+    <span style="--i:12;"></span>
+    <span style="--i:13;"></span>
+    <span style="--i:14;"></span>
+    <span style="--i:15;"></span>
+    <span style="--i:16;"></span>
+    <span style="--i:17;"></span>
+    <span style="--i:18;"></span>
+    <span style="--i:19;"></span>
+    <span style="--i:20;"></span>
+</div>
+<!-- Fim do Efeito RGB -->
+
+```
+
+Este é o html que cria o efeito RGB. Cada `<span>` representa uma faixa colorida, proporcionando um visual dinâmico e divertido
+
+![Alt text](images/efeito%20rgb.png)
+
+![Alt text](images/efeito%20rgb2.png)
