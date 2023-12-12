@@ -508,12 +508,73 @@ section.trabalhos .flex {
     transform: scale(1.05); /* Efeito ao passar o mouse */
 }
 
+/*estilo efeito rgb*/
+
+.loading {
+    position: relative;
+    display: flex;
+    gap: 15px;
+    justify-content: center; /* Adicionado para centralizar horizontalmente */
+    align-items: center; /* Adicionado para centralizar verticalmente */
+    height: 4vh; 
+}
+
+.loading span {
+    position: relative;
+    width: 5px;
+    height: 20px;
+    background: #000;
+}
+
+.loading span::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    animation: animate 8s linear infinite;
+    animation-delay: calc(var(--i) * 0.1s);
+}
+
+@keyframes animate {
+    0% {
+        background: #0f0;
+        box-shadow: 0 0 5px #0f0, 0 0 15px #0f0, 0 0 30px #0f0, 0 0 50px #0f0;
+        transform: rotate(0deg);
+    }
+    20% {
+        background: #0f0;
+        box-shadow: 0 0 5px #0f0, 0 0 15px #0f0, 0 0 30px #0f0, 0 0 50px #0f0;
+        transform: rotate(0deg);
+    }
+    40% {
+        background: #0f0;
+        box-shadow: 0 0 5px #0f0, 0 0 15px #0f0, 0 0 30px #0f0, 0 0 50px #0f0;
+        transform: rotate(90deg);
+        transform-origin: bottom;
+        filter: hue-rotate(0deg);
+    }
+    80% {
+        background: #0f0;
+        box-shadow: 0 0 5px #0f0, 0 0 15px #0f0, 0 0 30px #0f0, 0 0 50px #0f0;
+        transform: rotate(90deg);
+        transform-origin: bottom;
+        filter: hue-rotate(360deg);
+    }
+    90% {
+        background: #000;
+        box-shadow: none;
+        transform: rotate(0deg);
+    }
+    90.1%, 100% {
+        background: #000;
+        box-shadow: none;
+    }
+}
 
 
 
 /* estilo rodapé */
 footer {
-    background-color: #333;
+    background-color: #021C37;
     color: #fff;
     padding: 20px 0;
     text-align: center;
