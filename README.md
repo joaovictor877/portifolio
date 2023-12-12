@@ -52,6 +52,10 @@ Modificação 12/12
 
 **- Add:** Efeito RGB Animado
 
+![Alt text](images/efeito%20rgb.png)
+
+![Alt text](images/efeito%20rgb2.png)
+
 O código CSS abaixo cria um efeito RGB animado, ideal para indicar processos de carregamento de forma estilizada e moderna. A classe "loading" contém barras verticais que apresentam uma transição dinâmica entre as cores preta e verde. A animação é aprimorada com o uso de sombras, rotações e um cálculo de atraso para criar um efeito pulsante cativante.
 
 ```css
@@ -150,7 +154,3 @@ HTML:
 ```
 
 Este é o html que cria o efeito RGB. Cada `<span>` representa uma faixa colorida, proporcionando um visual dinâmico e divertido
-
-![Alt text](images/efeito%20rgb.png)
-
-![Alt text](images/efeito%20rgb2.png)
