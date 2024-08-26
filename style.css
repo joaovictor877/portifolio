@@ -327,7 +327,7 @@ input:checked~.toggle span {
     display: flex;
     justify-content: center;
     margin-top: 30px;
-    margin: 30px;       
+    margin: 20px;       
 }
 
 .redes-socias a {
@@ -405,10 +405,12 @@ input:checked~.toggle span {
     }
 }
 
-/* estilo rodapé */
+/* Estilo do rodapé final do site */
 footer {
     background-color: #021C37;
     color: #fff;
     padding: 20px 0;
     text-align: center;
 }
+
+
