@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfólio de João</title>
+    <!--google fonts-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&family=Poppins:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+    <!--fim google fonts-->
+    <!--foto do site-->
+    <link rel="icon" href="images/logo.jpeg">
+    <!--Css aba projetos-->
+    <style>
+/* Estilo geral */
+body {
+    height: 100vh;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Inter', sans-serif;
+    color: #1e1e1e;
+    background: linear-gradient(90deg, rgba(2, 0, 36, 1) 0%, rgba(9, 9, 121, 1) 35%, rgba(0, 212, 255, 1) 100%);
+    background-size: 300% 300%;
+    background-position: top left;
+    transition: background-color .25s;
+}
+
+body:has(#darkmode-toggle:checked) {
+    background-position: 100% 100%;
+    color: #d0d0d0;
+}
+
+h1, h3 {
+    font-weight: 600;
+}
+
+a {
+    text-decoration: none;
+    color: #007BFF;
+}
+
+/* Cabeçalho principal */
+.main-header {
+    background-color: rgba(9, 9, 121, 0.8);
+    color: white;
+    padding: 20px 0;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.main-header h1 {
+    margin: 0;
+    font-size: 2.5rem;
+}
+
+.nav-links {
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    margin: 10px 0 0;
+}
+
+.nav-links li {
+    margin: 0 15px;
+}
+
+.nav-links a {
+    color: white;
+    font-weight: 400;
+    transition: color 0.3s;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+    color: #FFD700;
+}
+
+/* Wrapper de Conteúdo */
+.content-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* Grid de Projetos */
+.projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.project-card {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
+    text-align: center;
+}
+
+.project-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.project-card h3 {
+    margin: 20px 0 10px;
+    font-size: 1.5rem;
+}
+
+.project-card p {
+    padding: 0 20px;
+    font-size: 1rem;
+}
+
+.project-link {
+    display: inline-block;
+    margin: 20px 0;
+    padding: 10px 20px;
+    background-color: #007BFF;
+    color: white;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.project-link:hover {
+    background-color: #0056b3;
+}
+
+.project-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Rodapé */
+footer {
+    background-color: rgba(2, 0, 36, 0.8);
+    color: white;
+    text-align: center;
+    padding: 20px;
+    margin-top: auto;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
+}
+
+</style>
+</head>
+<body>
+    <header class="main-header">
+        <h1>Meus Projetos</h1>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="index.html">Início</a></li>
+                <li><a href="projetos.html" class="active">Projetos</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section class="projects-grid">
+            <div class="project-card">
+                <img src="images/Captura de tela 2024-08-26 155633.png" alt="Projeto 1">
+                <h3>Quiz de Matemática</h3>
+                <p>Este app é um quiz de matemática que apresenta perguntas de múltipla escolha. O usuário responde às questões e recebe feedback imediato sobre se suas respostas estão corretas ou incorretas, com o objetivo de testar seus conhecimentos na área.<p/>
+                <a href="./projetos/projeto 1.html" class="project-link">Ver mais</a>
+            </div>
+            <div class="project-card">
+                <img src="imagens/projeto2.png" alt="Projeto 2">
+                <h3>Projeto 2</h3>
+                <p>descrição do projeto 2.</p>
+                <a href="https://link-para-o-projeto2.com" class="project-link">Ver mais</a>
+            </div>
+            <div class="project-card">
+                <img src="imagens/projeto3.png" alt="Projeto 3">
+                <h3>Projeto 3</h3>
+                <p>descrição do projeto 3.</p>
+                <a href="https://link-para-o-projeto3.com" class="project-link">Ver mais</a>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2024 Portfólio de João. Todos os direitos reservados.</p>
+    </footer>
+</body>
+</html>
