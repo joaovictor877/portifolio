@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banco de Dados - Microsoft Access</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="icon" href="../images/logo.png">
+    <style>
+        /* Estilo geral */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            color: #ffffff;
+            background: linear-gradient(90deg, rgba(2, 0, 36, 1) 0%, rgba(9, 9, 121, 1) 35%, rgba(0, 212, 255, 1) 100%);
+            background-size: 300% 300%;
+            background-position: top left;
+            transition: background-color .25s;
+        }
+
+        body:has(#darkmode-toggle:checked) {
+            background-position: 100% 100%;
+            color: #d0d0d0;
+        }
+
+        h1, h3 {
+            font-weight: 600;
+        }
+
+        h2 {
+            color: #7491f9;
+        }
+
+        a {
+            text-decoration: none;
+            color: #007BFF;
+        }
+
+        a:hover {
+            color: #FFD700;
+        }
+
+        /* Cabeçalho principal */
+        .main-header {
+            background-color: rgba(9, 9, 121, 0.8);
+            color: white;
+            padding: 20px 40px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .main-header h1 {
+            margin: 0;
+            font-size: 2rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .main-header h1 img {
+            margin-left: 10px;
+        }
+
+        .nav-links {
+            list-style-type: none;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            margin: 0;
+        }
+
+        .nav-links li {
+            margin: 0 15px;
+        }
+
+        .nav-links a {
+            color: white;
+            font-weight: 400;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: #FFD700;
+        }
+
+        /* Wrapper de Conteúdo */
+        .content-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Seção do Projeto */
+        .project-overview h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        .project-overview p {
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+    </style>
+    <script src="../script.js"></script>
+</head>
+<body>
+    <header class="main-header">
+        <h1>Locadora Fictícia <img src="https://upload.wikimedia.org/wikipedia/commons/f/f1/Microsoft_Office_Access_%282019-present%29.svg" width="30" height="30" alt="Microsoft Access"></h1>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="../index.html">Início</a></li>
+                <li><a href="../projetos.html">Projetos</a></li>
+                <li><a href="../index.html#redes">Contato</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main class="content-wrapper">
+        <section class="project-overview">
+            <h2>Banco de Dados de Locação de Veículos</h2>
+            <p>Este banco de dados foi desenvolvido para uma locadora de veículos e organiza as informações principais de maneira eficiente. Ele inclui tabelas para Lojas, Clientes, Automóveis e Aluguel, facilitando o gerenciamento de todos os aspectos da locação de veículos.</p>
+        </section>
+    </main>
+</body>
+</html>
