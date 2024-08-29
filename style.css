@@ -1,4 +1,3 @@
-
 /*Estilo geral */
 *{
     margin: 0;
@@ -23,16 +22,47 @@ body:has(#darkmode-toggle:checked) {
     color: #d0d0d0;
 }
 
-.interface{
+.interface {
     max-width: 1280px;
     margin: 0 auto;
 }
 
-.flex{
+.flex {
     display: flex;
 }
 
-.joa-contato button{
+header {
+    padding: 50px 4%;
+}
+
+header > .interface {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+header a {
+    color: #bdbdbd;
+    text-decoration: none;
+    display: inline-block;
+    transition: .2s;
+}
+
+header a:hover {
+    color: #ffffff;
+    transform: scale(1.05);
+}
+
+header nav ul {
+    list-style-type: none;
+}
+
+header nav ul li {
+    display: inline-block;
+    padding: 0 40px;
+}
+
+.joa-contato button {
     padding: 10px 40px;
     font-size: 18px;
     font-weight: 600;
@@ -43,78 +73,89 @@ body:has(#darkmode-toggle:checked) {
     transition: .2s;
 }
 
-/* estilo do cabeçalho */
-header{
-    padding: 0px 4%;
-}
-
-header > .interface{
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-header a{
-    color: #bdbdbd; 
-    text-decoration: none;
-    display: inline-block;
-    transition: .2s; /* tempo de transição */
-}
-
-header a:hover{
-    color: #ffffff;
-    transform: scale(1.05);
-}
-header nav ul{
-    list-style-type: none;
-}
-
-header nav ul li{
-    display: inline-block;
-    padding: 0 40px;
-}
-
- .joa-contato button:hover{
+.joa-contato button:hover {
     box-shadow: 0px 0px 8px #fff;
     transform: scale(1.05);
-    
 }
 
-/* estilo topo do site */
-section.topo-do-site{
-    padding: 40px 0;
-}
-
-section.topo-do-site .flex{
+.logo {
+    display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 90px;
-
 }
 
-.topo-do-site h1{
+.logo img {
+    height: 50px; /* Ajuste a altura conforme necessário */
+}
+
+.logo span {
+    color: white;
+    font-size: 22px;
+    margin-left: 15px; /* Espaço entre o logo e o nome */
+    font-weight: bold;
+}
+
+header nav ul li:nth-child(1) a {
+    color: #f4b400; /* Cor amarela para o primeiro link */
+}
+
+
+/* Estilo do topo do site */
+/* Estilo topo do site */
+section.topo-do-site {
+    padding: 100px 0;
+}
+
+section.topo-do-site .flex {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 50px;
+}
+
+.topo-do-site h1 {
     color: #fff;
     font-size: 42px;
-    line-height: 40px;
+    line-height: 48px;
 }
 
-.topo-do-site .txt-topo-site p{
+.topo-do-site .txt-topo-site p {
     color: #ffffff;
     margin: 40px 0;
+    font-size: 18px;
+    line-height: 28px;
 }
 
-.topo-do-site .img-topo-site img{
+.topo-do-site .img-topo-site img {
     position: relative;
     animation: flutuante 2s ease-in-out infinite alternate;
+    max-width: 100%;
+    height: auto;
 }
 
-@keyframes flutuante{
-  0%{
-    top: 0;
-  }  
-  100%{
-    top: 30px;
-  }
+/* Responsividade para dispositivos móveis */
+@media (max-width: 768px) {
+    section.topo-do-site .flex {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .topo-do-site .txt-topo-site {
+        margin-bottom: 30px;
+    }
+
+    .topo-do-site .img-topo-site img {
+        max-width: 80%; /* Reduz o tamanho da imagem para caber melhor em telas menores */
+    }
+}
+
+@keyframes flutuante {
+    0% {
+        top: 0;
+    }
+    100% {
+        top: 30px;
+    }
 }
 
 /* estilo habilidades */
@@ -267,7 +308,7 @@ section.contato h2 {
     height: 2.3em;
     position: relative;
     width: 3.90em;
-    left: -33px; /* ajustar */
+    left: -33px;
 }
 
 .toggle span {
@@ -348,8 +389,8 @@ input:checked~.toggle span {
     position: relative;
     display: flex;
     gap: 15px;          
-    justify-content: center; /* Adicionado para centralizar horizontalmente */
-    align-items: center; /* Adicionado para centralizar verticalmente */
+    justify-content: center; /* centralizar horizontalmente */
+    align-items: center; /* centralizar verticalmente */
     height: 4vh;
     
 }
