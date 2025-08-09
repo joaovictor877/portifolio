@@ -1,238 +1,417 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Portfólio de João</title>
-    <!--google fonts-->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&family=Poppins:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
-    <!--fim google fonts-->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <!--foto do site-->
-    <link rel="icon" href="images/logo.jpeg">
-    <!--Css aba projetos-->
-    <style>
-/* Estilo geral */
-body {
-    height: 100vh;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    font-family: 'Inter', sans-serif;
-    color: #1e1e1e;
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Portfólio de João - Projetos</title>
+  <!-- Fonte Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <!-- Swiper CSS -->
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css"
+  />
+  <link rel="icon" href="images/logo.png">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
     background: linear-gradient(90deg, rgba(2, 0, 36, 1) 0%, rgba(9, 9, 121, 1) 35%, rgba(0, 212, 255, 1) 100%);
     background-size: 300% 300%;
-    background-position: top left;
-    transition: background-color .25s;
-}
+      background-position: top left;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      line-height: 1.5;
+      transition: background-color 0.25s;
+    }
 
-body:has(#darkmode-toggle:checked) {
-    background-position: 100% 100%;
-    color: #d0d0d0;
-}
+    /* Cabeçalho */
+    header {
+      background-color: rgba(9, 9, 121, 0.9);
+      padding: 2rem 4%;
+      color: white;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
 
-h1, h3 {
-    font-weight: 600;
-}
+    header h1 {
+      font-weight: 700;
+      font-size: 2.5rem;
+      letter-spacing: 2px;
+      margin-bottom: 0.5rem;
+      font-family: 'Inter', sans-serif;
+    }
 
-a:hover {
-    text-decoration: none;
-    color: #ffff;
-}
+    nav {
+      margin-top: 0.5rem;
+    }
 
-/* Cabeçalho principal */
-.main-header {
-    background-color: rgba(9, 9, 121, 0.8);
-    color: white;
-    padding: 20px 0;
-    text-align: center;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-}
+    nav a {
+      color: #bdbdbd;
+      text-decoration: none;
+      font-weight: 600;
+      margin: 0 1.5rem;
+      font-size: 1rem;
+      transition: color 0.3s ease, transform 0.2s ease;
+      font-family: 'Inter', sans-serif;
+    }
 
-.main-header h1 {
-    margin: 0;
-    font-size: 2.5rem;
-}
+    nav a:hover,
+    nav a.active {
+      color: #f4b400; /* amarelo destaque */
+      transform: scale(1.05);
+    }
 
-.nav-links {
-    list-style-type: none;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    margin: 10px 0 0;
-}
+    /* Container principal */
+    main {
+      flex-grow: 1;
+      max-width: 1280px;
+      margin: 3rem auto 4rem;
+      padding: 0 4%;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 2.5rem;
+    }
 
-.nav-links li {
-    margin: 0 15px;
-}
+    /* Card do projeto */
+    .project-card {
+      background-color: #fff;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+    }
 
-.nav-links a {
-    color: white;
-    font-weight: 400;
-    transition: color 0.3s;
-}
+    .project-card:hover,
+    .project-card:focus-within {
+      transform: translateY(-10px);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.15);
+      outline: none;
+    }
 
-.nav-links a:hover,
-.nav-links a.active {
-    color: #FFD700;
-}
+    /* Swiper container e imagens */
+    .swiper {
+      width: 100%;
+      height: 200px;
+      border-bottom: 1px solid #ddd;
+      border-radius: 12px 12px 0 0;
+      overflow: hidden;
+    }
 
-/* Wrapper de Conteúdo */
-.content-wrapper {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
+    .swiper-slide img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 0;
+      user-select: none;
+      pointer-events: none;
+    }
 
-/* Grid de Projetos */
-.projects-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px;
-    padding: 40px;
-    max-width: 1200px;
-    margin: 0 auto;
-}
+    /* Swiper pagination bullets */
+    .swiper-pagination-bullet {
+      background: rgba(9, 9, 121, 0.7);
+      opacity: 1;
+      transition: background-color 0.3s;
+    }
 
-.project-card {
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-    transition: transform 0.3s, box-shadow 0.3s;
-    text-align: center;
-}
+    .swiper-pagination-bullet-active {
+      background: #f4b400;
+    }
 
-.project-card img {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-}
+    .project-content {
+      padding: 1.5rem 2rem;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
 
-.project-card h3 {
-    margin: 20px 0 10px;
-    font-size: 1.5rem;
-}
+    .project-title {
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+      color: #090979; /* azul escuro */
+      font-family: 'Inter', sans-serif;
+    }
 
-.project-card p {
-    padding: 0 20px;
-    font-size: 1rem;
-}
+    .project-description {
+      font-size: 1rem;
+      color: #555;
+      flex-grow: 1;
+      line-height: 1.5;
+      margin-bottom: 1.25rem;
+      font-family: 'Inter', sans-serif;
+    }
 
-.project-link {
-    display: inline-block;
-    margin: 20px 0;
-    padding: 10px 20px;
-    background-color: #007BFF;
-    color: white;
-    border-radius: 4px;
-    transition: background-color 0.3s;
-}
+    .project-link {
+      align-self: flex-start;
+      background-color: #090979; /* azul escuro */
+      color: white;
+      padding: 0.7rem 1.5rem;
+      border-radius: 30px;
+      font-weight: 600;
+      text-decoration: none;
+      box-shadow: 0 4px 12px rgba(9, 9, 121, 0.4);
+      transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+      font-family: 'Inter', sans-serif;
+      user-select: none;
+    }
 
-.project-link:hover {
-    background-color: #0056b3;
-}
+    .project-link:hover,
+    .project-link:focus {
+      background-color: #f4b400; /* amarelo destaque */
+      box-shadow: 0 6px 18px rgba(244, 180, 0, 0.6);
+      color: #1e1e1e;
+      transform: scale(1.05);
+      outline: none;
+    }
 
-.project-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-}
+    /* Rodapé */
+    footer {
+      background-color: rgba(2, 0, 36, 0.9);
+      color: white;
+      text-align: center;
+      padding: 1rem 4%;
+      font-size: 0.9rem;
+      box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.3);
+      font-family: 'Inter', sans-serif;
+    }
 
-/* Rodapé */
-footer {
-    background-color: rgba(2, 0, 36, 0.8);
-    color: white;
-    text-align: center;
-    padding: 10px;
-    margin-top: auto;
-    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
-}
+    /* Responsividade */
 
-.img-fluid {
-    max-width: 100%;
-    height: auto;
-}
+    @media (max-width: 900px) {
+      header h1 {
+        font-size: 2rem;
+      }
 
-</style>
+      nav a {
+        margin: 0 1rem;
+        font-size: 0.95rem;
+      }
+
+      main {
+        margin: 2rem auto 3rem;
+        gap: 2rem;
+      }
+
+      .swiper,
+      .swiper-slide img {
+        height: 180px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      header {
+        padding: 1.5rem 2rem;
+      }
+
+      header h1 {
+        font-size: 1.6rem;
+      }
+
+      nav {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-top: 0.5rem;
+      }
+
+      nav a {
+        margin: 0.3rem 0.75rem;
+        font-size: 0.9rem;
+      }
+
+      main {
+        margin: 1.5rem 2rem 2rem;
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+
+      .swiper,
+      .swiper-slide img {
+        height: 160px;
+      }
+
+      .project-content {
+        padding: 1rem 1.5rem;
+      }
+
+      .project-title {
+        font-size: 1.3rem;
+      }
+
+      .project-description {
+        font-size: 0.95rem;
+        margin-bottom: 1rem;
+      }
+
+      .project-link {
+        padding: 0.6rem 1.25rem;
+        font-size: 0.95rem;
+      }
+    }
+  </style>
 </head>
-<!--js bootstrap-->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-  </body>
 <body>
-    <header class="main-header">
-        <h1>Meus Projetos</h1>
-        <nav>
-            <ul class="nav-links">
-                <li><a href="index.html">Início</a></li>
-                <li><a href="projetos.html" class="active">Projetos</a></li>
-            </ul>
-        </nav>
-    </header>
-    <main>
-        <section class="projects-grid">
-            <div class="project-card">
-                <div id="carouselExampleSlidesOnly1" class="carousel slide" data-ride="carousel">
-                    <div class="carousel-inner">
-                        <div class="carousel-item active">
-                            <img class="d-block w-100" src="images/quiz 1.png" alt="Primeira imagem">
-                        </div>
-                        <div class="carousel-item">
-                            <img class="d-block w-100" src="images/quiz 2.png" alt="Segunda Imagem">
-                        </div>
-                        <div class="carousel-item">
-                            <img class="d-block w-100" src="images/quiz 3.png" alt="Terceira Imagem">
-                        </div>
-                    </div>
-                </div>
-                <h3>Quiz de Matemática</h3>
-                <p>Este app é um quiz de matemática que apresenta perguntas de múltipla escolha. O usuário responde às questões e recebe feedback imediato sobre se suas respostas estão corretas ou incorretas, com o objetivo de testar seus conhecimentos na área.</p>
-                <a href="./projetos/projeto 1.html" class="project-link">Ver mais</a>
-            </div>
-            <div class="project-card">
-                <div id="carouselExampleSlidesOnly2" class="carousel slide" data-ride="carousel">
-                    <div class="carousel-inner">
-                        <div class="carousel-item active">
-                            <img class="d-block w-100" src="images/banco de dados locadora.png" alt="Primeira imagem">
-                        </div>
-                        <div class="carousel-item">
-                            <img class="d-block w-100" src="images/banco de dados 1.png" alt="Segunda Imagem">
-                        </div>
-                        <div class="carousel-item">
-                            <img class="d-block w-100" src="images/banco de dados 2.png" alt="Terceira Imagem">
-                        </div>
-                    </div>
-                </div>
-                <h3>Banco de Dados Locadora</h3>
-                <p>Este banco de dados em Acess foi desenvolvido para uma "locadora de veículos" que gerencia informações de lojas, clientes, e automóveis. Nele inclui todos os detalhes de cada locação, incluindo cliente, veículo, e agência, otimizando o controle de operação da locadora.</p>
-                <a href="./projetos/projeto 2.html" class="project-link">Ver mais</a>
-            </div>
-            <div class="project-card">
-                <div id="carouselExampleSlidesOnly3" class="carousel slide" data-ride="carousel">
-                    <div class="carousel-inner">
-                        <div class="carousel-item active">
-                            <img class="d-block w-100" src="images/carrinho2.jpeg" alt="Primeira imagem">
-                        </div>
-                        <div class="carousel-item">
-                            <img class="d-block w-100" src="images/carrinho3.jpeg" alt="Segunda Imagem">
-                        </div>
-                        <div class="carousel-item">
-                            <img class="d-block w-100" src="images/grupo_alphatec-s,p.jpeg" alt="Terceira Imagem">
-                        </div>
-                    </div>
-                </div>
-                <h3>Carrinho Autônomo</h3>
-                <p>Este projeto foi focado na criação de um carrinho autônomo capaz de navegar de forma independente em diversos ambientes. Utilizando tecnologias como visão computacional e sensores ultrassônicos.</p>
-                <a href="https://link-para-o-projeto3.com" class="project-link">Ver mais</a>
-            </div>
-        </section>  
-    </main>
-    <footer>
-        <p>&copy; 2025 Portfólio de João. Todos os direitos reservados.</p>
-    </footer>
+  <header>
+    <h1>Portfólio de João</h1>
+    <nav>
+      <a href="index.html">Início</a>
+      <a href="projetos.html" class="active">Projetos</a>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Projeto 1 -->
+    <article class="project-card" tabindex="0" aria-label="Projeto Quiz de Matemática">
+      <div class="swiper quiz-swiper">
+        <div class="swiper-wrapper">
+          <div class="swiper-slide">
+            <img src="images/quiz 1.png" alt="Quiz de Matemática - imagem 1" />
+          </div>
+          <div class="swiper-slide">
+            <img src="images/quiz 2.png" alt="Quiz de Matemática - imagem 2" />
+          </div>
+          <div class="swiper-slide">
+            <img src="images/quiz 3.png" alt="Quiz de Matemática - imagem 3" />
+          </div>
+        </div>
+        <!-- Pagination -->
+        <div class="swiper-pagination"></div>
+      </div>
+      <div class="project-content">
+        <h2 class="project-title">Quiz de Matemática</h2>
+        <p class="project-description">
+          Quiz interativo com perguntas de múltipla escolha e feedback imediato para testar seus conhecimentos.
+        </p>
+        <a href="./projetos/projeto 1.html" class="project-link" aria-label="Ver mais sobre Quiz de Matemática">Ver mais</a>
+      </div>
+    </article>
+
+    <!-- Projeto 2 -->
+    <article class="project-card" tabindex="0" aria-label="Projeto Banco de Dados Locadora">
+      <div class="swiper banco-swiper">
+        <div class="swiper-wrapper">
+          <div class="swiper-slide">
+            <img src="images/banco de dados locadora.png" alt="Banco de Dados Locadora - imagem 1" />
+          </div>
+          <div class="swiper-slide">
+            <img src="images/banco de dados 1.png" alt="Banco de Dados Locadora - imagem 2" />
+          </div>
+          <div class="swiper-slide">
+            <img src="images/banco de dados 2.png" alt="Banco de Dados Locadora - imagem 3" />
+          </div>
+        </div>
+        <!-- Pagination -->
+        <div class="swiper-pagination"></div>
+      </div>
+      <div class="project-content">
+        <h2 class="project-title">Banco de Dados Locadora</h2>
+        <p class="project-description">
+          Sistema de banco de dados para gerenciar lojas, clientes e veículos de uma locadora de automóveis. 
+        </p>
+        <a href="./projetos/projeto 2.html" class="project-link" aria-label="Ver mais sobre Banco de Dados Locadora">Ver mais</a>
+      </div>
+    </article>
+
+    <!-- Projeto 3 -->
+    <article class="project-card" tabindex="0" aria-label="Projeto Carrinho Autônomo">
+      <div class="swiper carrinho-swiper">
+        <div class="swiper-wrapper">
+          <div class="swiper-slide">
+            <img src="images/carrinho2.jpeg" alt="Carrinho Autônomo - imagem 1" />
+          </div>
+          <div class="swiper-slide">
+            <img src="images/carrinho3.jpeg" alt="Carrinho Autônomo - imagem 2" />
+          </div>
+          <div class="swiper-slide">
+            <img src="images/grupo_alphatec-s,p.jpeg" alt="Carrinho Autônomo - imagem 3" />
+          </div>
+        </div>
+        <!-- Pagination -->
+        <div class="swiper-pagination"></div>
+      </div>
+      <div class="project-content">
+        <h2 class="project-title">Carrinho Autônomo</h2>
+        <p class="project-description">
+          Desenvolvimento de carrinho autônomo com navegação independente usando visão computacional e sensores.
+        </p>
+        <a href="https://link-para-o-projeto3.com" class="project-link" aria-label="Ver mais sobre Carrinho Autônomo" target="_blank" rel="noopener noreferrer">Ver mais</a>
+      </div>
+    </article>
+    <!-- Projeto 3 -->
+    <article class="project-card" tabindex="0" aria-label="Projeto Carrinho Autônomo">
+      <div class="swiper carrinho-swiper">
+        <div class="swiper-wrapper">
+          <div class="swiper-slide">
+            <img src="images/carrinho2.jpeg" alt="Carrinho Autônomo - imagem 1" />
+          </div>
+          <div class="swiper-slide">
+            <img src="images/carrinho3.jpeg" alt="Carrinho Autônomo - imagem 2" />
+          </div>
+          <div class="swiper-slide">
+            <img src="images/grupo_alphatec-s,p.jpeg" alt="Carrinho Autônomo - imagem 3" />
+          </div>
+        </div>
+        <!-- Pagination -->
+        <div class="swiper-pagination"></div>
+      </div>
+      <div class="project-content">
+        <h2 class="project-title">Seguidor de Linha</h2>
+        <p class="project-description">
+          Desenvolvimento de carrinho autônomo com navegação independente usando visão computacional e sensores.
+        </p>
+        <a href="https://link-para-o-projeto3.com" class="project-link" aria-label="Ver mais sobre Carrinho Autônomo" target="_blank" rel="noopener noreferrer">Ver mais</a>
+      </div>
+    </article>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Portfólio de João. Todos os direitos reservados.</p>
+  </footer>
+
+  <!-- Swiper JS -->
+  <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
+  <script>
+    // Inicializa Swiper para cada carrossel com autoplay que pausa na interação
+    const swipers = document.querySelectorAll('.swiper');
+    swipers.forEach((swiperEl) => {
+      const swiperInstance = new Swiper(swiperEl, {
+        loop: true,
+        pagination: {
+          el: swiperEl.querySelector('.swiper-pagination'),
+          clickable: true,
+        },
+        grabCursor: true,
+        slidesPerView: 1,
+        spaceBetween: 10,
+        autoplay: {
+          delay: 3000,
+          disableOnInteraction: false, // NÃO desativa autoplay após interação
+          pauseOnMouseEnter: true,     // pausa autoplay ao passar mouse
+        },
+      });
+      // Pausa autoplay ao tocar e retoma após
+      swiperEl.addEventListener('touchstart', () => {
+        swiperInstance.autoplay.stop();
+      });
+      swiperEl.addEventListener('touchend', () => {
+        swiperInstance.autoplay.start();
+      });
+    });
+  </script>
 </body>
 </html>
