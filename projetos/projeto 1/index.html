@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfólio de João - Projetos</title>
+    <link rel="stylesheet" href="styles.css">
+    <!--google fonts-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&family=Poppins:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="icon" href="images/logo.jpeg">
+    <style>
+/* Estilo geral */
+ *{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+}
+
+body {
+    height: 100vh;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    color: #ffffff;
+    background: linear-gradient(90deg, rgba(2, 0, 36, 1) 0%, rgba(9, 9, 121, 1) 35%, rgba(0, 212, 255, 1) 100%);
+    background-size: 300% 300%;
+    background-position: top left;
+    transition: background-color .25s;
+    
+}
+
+body:has(#darkmode-toggle:checked) {
+    background-position: 100% 100%;
+    color: #d0d0d0;
+}
+
+h1, h3 {
+    font-weight: 600;
+    
+}
+
+h2 {
+    color: #7491f9;
+}
+
+
+a {
+    text-decoration: none;
+    color: #007BFF;
+}
+
+a:hover {
+    color: #FFD700;
+}
+
+ /* Cabeçalho principal */
+.main-header {
+    background-color: rgba(9, 9, 121, 0.8);
+    color: white;
+    padding: 20px 0;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.main-header h1 {
+    margin: 0;
+    font-size: 2.5rem;
+}
+
+.nav-links {
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    margin: 10px 0 0;
+}
+
+.nav-links li {
+    margin: 0 15px;
+}
+
+.nav-links a {
+    color: white;
+    font-weight: 400;
+    transition: color 0.3s;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+    color: #FFD700;
+}
+
+/* Wrapper de Conteúdo */
+.content-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Seções do Projeto */
+
+.project-overview, .project-details, .software-version {
+    margin-bottom: 40px;
+}
+
+.project-overview h2, .project-details h2, .software-version h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+.project-overview p, .project-details p, .software-version p, .software-version ul {
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+.software-version ul {
+    padding-left: 20px;
+    
+}
+
+.software-version li {
+    margin-bottom: 10px;
+}
+
+.nav-links a {
+    color: white;
+    font-weight: 400;
+    transition: color 0.3s;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+    color: #FFD700;
+}
+
+</style>
+        <script src="../script.js"></script>
+</head>
+<body>
+    <header class="main-header">
+        <h1>Quiz de Matemática <img src="../images/math-format-linear-svgrepo-com (1).svg" width="30" height="30" alt=""></h1> 
+        <nav>
+            <ul class="nav-links">
+                <li><a href="../index.html">Início</a></li>
+                <li><a href="../projetos.html">Projetos</a></li>
+                <li><a href="../index.html#redes">Contato</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main class="content-wrapper">
+        <section class="project-overview">
+            <h2>Objetivo do Sistema</h2>
+            <p>O objetivo deste sistema é fazer algumas perguntas de conteúdos gerais sobre matemática para que o usuário responda. As perguntas são apresentadas em formato de quiz, onde o usuário deve escolher entre as opções de alternativas. Após o usuário responder cada pergunta, o sistema retorna se a resposta está correta ou incorreta. O sistema tem como objetivo testar o conhecimento dos usuários em uma área específica.</p>
+        </section>
+        
+        <section class="project-details">
+            <h2>Detalhes do Sistema</h2>
+            <h3>Estrutura do Código</h3>
+            <p>No início do código, é declarada uma string <code>nome</code> inicializada com <code>null</code>. Em seguida, o <code>JOptionPane</code> é utilizado para exibir uma mensagem de boas-vindas, coletando o nome do usuário e armazenando-o. Após isso, foi criada a tela inicial com <code>JFrame</code> para exibição do layout e um botão para iniciar o questionário, que redireciona o usuário para a tela de perguntas.</p>
+            <p>Foram criadas 4 telas de <code>JFrame</code> com perguntas e campos de respostas. Para exibir as perguntas, foi utilizado o <code>Label</code>, e um <code>Panel</code> foi adicionado para o design do aplicativo. As respostas utilizam o <code>RadioButton</code>, permitindo interações de múltipla escolha. No final, foram colocados dois botões: um para voltar à tela inicial e refazer o quiz, e outro para sair.</p>
+        </section>
+
+        <section class="software-version">
+            <h2>Versão do Software</h2>
+            <p>Esse sistema está na versão final 4.0. Aqui está um resumo das versões anteriores:</p>
+            <ul>
+                <li><strong>Versão 1.0:</strong> Tela de boas-vindas com inserção do nome.</li>
+                <li><strong>Versão 2.0:</strong> Adicionadas as janelas da tela inicial e das perguntas.</li>
+                <li><strong>Versão 3.0:</strong> Implementação das respostas, indicando se estão corretas ou incorretas.</li>
+                <li><strong>Versão 4.0:</strong> Correção de bugs na exibição da janela e reformulação do design.</li>
+            </ul>
+        </section>
+</main>
+</body>
+</html>

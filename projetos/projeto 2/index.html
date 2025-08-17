@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Portfólio de João - Projetos</title>
+  <link rel="stylesheet" href="styles.css" />
+ 
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="icon" href="images/logo.png" />
+  <style>
+    /* Reset e fonte */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(
+        90deg,
+        rgba(2, 0, 36, 1) 0%,
+        rgba(9, 9, 121, 1) 35%,
+        rgba(0, 212, 255, 1) 100%
+      );
+      color: #f0f0f0;
+      display: flex;
+      flex-direction: column;
+      transition: background-color 0.25s;
+      padding-bottom: 40px;
+    }
+
+    body:has(#darkmode-toggle:checked) {
+      background-position: 100% 100%;
+      color: #d0d0d0;
+    }
+
+    /* Cabeçalho */
+    .main-header {
+      background-color: rgba(9, 9, 121, 0.85);
+      color: white;
+      padding: 20px 4%;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+    }
+
+    .main-header h1 {
+      font-weight: 700;
+      font-size: 2.5rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0;
+      color: #fff;
+    }
+
+    .main-header h1 img {
+      filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.5));
+    }
+
+    nav {
+      flex-basis: 100%;
+      margin-top: 10px;
+    }
+
+    .nav-links {
+      list-style: none;
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      padding: 0;
+    }
+
+    .nav-links li a {
+      color: #bdbdbd;
+      font-weight: 500;
+      font-size: 1.1rem;
+      text-decoration: none;
+      transition: color 0.3s ease, transform 0.2s ease;
+    }
+
+    .nav-links li a:hover,
+    .nav-links li a.active {
+      color: #f4b400;
+      transform: scale(1.05);
+    }
+
+    /* Conteúdo principal */
+    .content-wrapper {
+      max-width: 1200px;
+      margin: 40px auto 0;
+      padding: 0 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 40px;
+      justify-content: center;
+    }
+
+    /* Galeria de imagens */
+    .gallery {
+      flex: 1 1 500px;
+      max-width: 600px;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+      background: #0a0a4a;
+      position: relative;
+    }
+
+    .gallery img {
+      width: 100%;
+      height: 350px;
+      object-fit: cover;
+      transition: transform 0.4s ease;
+      cursor: zoom-in;
+      user-select: none;
+      display: block;
+    }
+
+    .gallery img:hover {
+      transform: scale(1.05);
+    }
+
+    /* Navegação da galeria */
+    .gallery-nav {
+      position: absolute;
+      top: 50%;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      transform: translateY(-50%);
+      padding: 0 10px;
+      pointer-events: none;
+    }
+
+    .gallery-nav button {
+      background: rgba(0, 0, 0, 0.4);
+      border: none;
+      color: #f4b400;
+      font-size: 2rem;
+      padding: 5px 15px;
+      border-radius: 50%;
+      cursor: pointer;
+      pointer-events: all;
+      transition: background-color 0.3s ease;
+      user-select: none;
+    }
+
+    .gallery-nav button:hover {
+      background: #f4b400;
+      color: #0a0a4a;
+    }
+
+    /* Descrição do projeto */
+    .project-overview {
+      flex: 1 1 450px;
+      max-width: 550px;
+      background: rgba(9, 9, 121, 0.7);
+      border-radius: 15px;
+      padding: 30px 40px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .project-overview h2 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      color: #7491f9;
+      font-weight: 700;
+      text-shadow: 0 0 5px rgba(116, 145, 249, 0.7);
+    }
+
+    .project-overview p {
+      font-size: 1.1rem;
+      line-height: 1.7;
+      color: #e0e0ff;
+      margin-bottom: 30px;
+    }
+
+    /* Detalhes extras */
+    .details {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 25px;
+    }
+
+    .detail-item {
+      flex: 1 1 200px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      color: #cfdcff;
+      font-weight: 600;
+      font-size: 1rem;
+      user-select: none;
+      transition: background-color 0.3s ease;
+    }
+
+    .detail-item:hover {
+      background-color: rgba(244, 180, 0, 0.3);
+      color: #1e1e1e;
+      box-shadow: inset 0 0 15px rgba(244, 180, 0, 0.6);
+    }
+
+    .detail-item svg {
+      width: 28px;
+      height: 28px;
+      fill: #f4b400;
+      flex-shrink: 0;
+    }
+
+    /* Botão voltar */
+    .btn-back {
+      margin-top: 40px;
+      align-self: flex-start;
+      background-color: #f4b400;
+      color: #1e1e1e;
+      font-weight: 700;
+      padding: 12px 30px;
+      border-radius: 30px;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 6px 15px rgba(244, 180, 0, 0.6);
+      transition: background-color 0.3s ease, transform 0.2s ease;
+      text-decoration: none;
+      display: inline-block;
+      user-select: none;
+    }
+
+    .btn-back:hover {
+      background-color: #d1a800;
+      transform: scale(1.05);
+    }
+
+    /* Responsividade */
+    @media (max-width: 900px) {
+      .content-wrapper {
+        flex-direction: column;
+        align-items: center;
+        padding: 0 15px;
+      }
+
+      .gallery,
+      .project-overview {
+        max-width: 100%;
+        flex: 1 1 100%;
+      }
+
+      .gallery img {
+        height: 300px;
+      }
+
+      .project-overview h2 {
+        font-size: 2rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .gallery img {
+        height: 220px;
+      }
+
+      .project-overview h2 {
+        font-size: 1.6rem;
+      }
+
+      .project-overview p {
+        font-size: 1rem;
+      }
+
+      .detail-item {
+        flex: 1 1 100%;
+        font-size: 0.95rem;
+      }
+
+      .btn-back {
+        padding: 10px 25px;
+        font-size: 0.95rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="main-header">
+    <h1>
+      Locadora Fictícia
+      <img
+        src="https://upload.wikimedia.org/wikipedia/commons/f/f1/Microsoft_Office_Access_%282019-present%29.svg"
+        width="30"
+        height="30"
+        alt="Microsoft Access"
+      />
+    </h1>
+    <nav>
+      <ul class="nav-links">
+        <li><a href="../index.html">Início</a></li>
+        <li><a href="../projetos.html">Projetos</a></li>
+        <li><a href="../index.html#redes">Contato</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="content-wrapper">
+    <!-- Galeria de imagens -->
+    <div class="gallery">
+      <img
+        id="gallery-image"
+        src="../images/banco de dados locadora.png"
+        alt="Banco de Dados Locadora - imagem 1"
+        draggable="false"
+      />
+      <div class="gallery-nav">
+        <button id="prev-btn" aria-label="Imagem anterior">&#10094;</button>
+        <button id="next-btn" aria-label="Próxima imagem">&#10095;</button>
+      </div>
+    </div>
+
+    <!-- Descrição e detalhes -->
+    <section class="project-overview">
+      <h2>Banco de Dados de Locação de Veículos</h2>
+      <p>
+        Este banco de dados foi desenvolvido para uma locadora de veículos e organiza as informações principais de maneira eficiente. Ele inclui tabelas para Lojas, Clientes, Automóveis e Aluguel, facilitando o gerenciamento de todos os aspectos da locação de veículos. Neste projeto foi usado o Microsoft Access onde eu aprendi a criar uma base de dados capaz de suprir demandas de falta de informações internas em uma empresa.
+      </p>
+
+      <div class="details">
+        <div class="detail-item" title="Tecnologia utilizada">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M12 2L2 7v7c0 5 5 7 10 7s10-2 10-7V7l-10-5zM7 14l-3-3 1.5-1.5L7 11l5-5 1.5 1.5L7 14z" />
+          </svg>
+          Microsoft Access
+        </div>
+        <div class="detail-item" title="Ano do projeto">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 15h-2v-6h2zm0-8h-2V7h2z" />
+          </svg>
+          Realizado em 2023 no Senac Nações Unidas
+        </div>
+        <div class="detail-item" title="Status do projeto">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+          </svg>
+          Concluído
+        </div>
+      </div>
+
+      <a href="../projetos.html" class="btn-back" aria-label="Voltar para projetos">← Voltar</a>
+    </section>
+  </main>
+
+  <script>
+    // Galeria simples com navegação por botões
+    const images = [
+      '../images/banco de dados locadora.png',
+      '../images/banco de dados 1.png',
+      '../images/banco de dados 2.png',
+    ];
+
+    let currentIndex = 0;
+    const galleryImage = document.getElementById('gallery-image');
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+
+    function updateImage() {
+      galleryImage.src = images[currentIndex];
+      galleryImage.alt = `Banco de Dados Locadora - imagem ${currentIndex + 1}`;
+    }
+
+    prevBtn.addEventListener('click', () => {
+      currentIndex = (currentIndex - 1 + images.length) % images.length;
+      updateImage();
+    });
+
+    nextBtn.addEventListener('click', () => {
+      currentIndex = (currentIndex + 1) % images.length;
+      updateImage();
+    });
+
+    // Suporte para teclado (setas esquerda/direita)
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') {
+        prevBtn.click();
+      } else if (e.key === 'ArrowRight') {
+        nextBtn.click();
+      }
+    });
+  </script>
+</body>
+</html>
