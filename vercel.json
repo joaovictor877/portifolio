@@ -1,9 +1,9 @@
 {
-  "routes": [
-    { "src": "/", "dest": "/index.html" },
-    { "src": "/projetos", "dest": "projetos.html" },
-    { "src": "/sobre", "dest": "sobre.html" },
-    { "src": "/contato", "dest": "contato.html" }
+  "rewrites": [
+    { "source": "/projetos", "destination": "/projetos.html" },
+    { "source": "/sobre", "destination": "/sobre.html" },
+    { "source": "/contato", "destination": "/contato.html" }
   ]
 }
+
 
