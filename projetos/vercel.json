@@ -1,7 +1,5 @@
 {
-  "rewrites": [
-    { "source": "/projetos", "destination": "/projetos.html" },
-    { "source": "/sobre", "destination": "/sobre.html" },
-    { "source": "/contato", "destination": "/contato.html" }
+  "redirects": [
+    { "source": "/index.html", "destination": "/", "permanent": true }
   ]
 }
