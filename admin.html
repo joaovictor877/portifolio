@@ -190,11 +190,42 @@
       background: rgba(0, 255, 200, 0.05);
     }
 
+    .image-preview-container {
+      position: relative;
+      display: inline-block;
+      max-width: 100%;
+    }
+
     .image-preview {
       max-width: 100%;
       max-height: 200px;
       margin-top: 1rem;
       border-radius: 8px;
+      display: none;
+    }
+
+    .btn-remove-image {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      background: #ff4444;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      cursor: pointer;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+      font-weight: bold;
+    }
+
+    .btn-remove-image:hover {
+      background: #ff2222;
+      transform: scale(1.1);
     }
 
     /* Buttons */
@@ -406,7 +437,10 @@
             <p>Clique ou arraste uma imagem aqui</p>
             <input type="file" id="imageFile" accept="image/*" style="display: none;">
           </div>
-          <img id="imagePreview" class="image-preview" style="display: none;">
+          <div class="image-preview-container">
+            <img id="imagePreview" class="image-preview">
+            <button type="button" class="btn-remove-image" id="removeImageBtn" style="display: none;">×</button>
+          </div>
         </div>
 
         <button type="submit" class="btn-submit" id="submitBtn">Adicionar Projeto</button>
@@ -504,6 +538,8 @@
     // Image upload
     const imageUpload = document.getElementById('imageUpload');
     const imageFile = document.getElementById('imageFile');
+    const imagePreview = document.getElementById('imagePreview');
+    const removeImageBtn = document.getElementById('removeImageBtn');
 
     imageUpload.addEventListener('click', () => imageFile.click());
 
@@ -512,11 +548,22 @@
       if (selectedImageFile) {
         const reader = new FileReader();
         reader.onload = (e) => {
-          document.getElementById('imagePreview').src = e.target.result;
-          document.getElementById('imagePreview').style.display = 'block';
+          imagePreview.src = e.target.result;
+          imagePreview.style.display = 'block';
+          removeImageBtn.style.display = 'flex';
         };
         reader.readAsDataURL(selectedImageFile);
       }
+    });
+
+    // Remove image
+    removeImageBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      selectedImageFile = null;
+      imageFile.value = '';
+      imagePreview.src = '';
+      imagePreview.style.display = 'none';
+      removeImageBtn.style.display = 'none';
     });
 
     // Form submit
@@ -577,8 +624,10 @@
       techList = [];
       renderTechTags();
       selectedImageFile = null;
-      document.getElementById('imagePreview').style.display = 'none';
-      document.getElementById('imageFile').value = '';
+      imagePreview.src = '';
+      imagePreview.style.display = 'none';
+      removeImageBtn.style.display = 'none';
+      imageFile.value = '';
       editingProjectId = null;
       document.getElementById('formTitle').textContent = 'Adicionar Novo Projeto';
       document.getElementById('submitBtn').textContent = 'Adicionar Projeto';
@@ -639,8 +688,9 @@
         renderTechTags();
 
         if (data.imageUrl) {
-          document.getElementById('imagePreview').src = data.imageUrl;
-          document.getElementById('imagePreview').style.display = 'block';
+          imagePreview.src = data.imageUrl;
+          imagePreview.style.display = 'block';
+          removeImageBtn.style.display = 'flex';
         }
 
         editingProjectId = projectId;
