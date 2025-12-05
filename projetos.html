@@ -7,6 +7,11 @@
   <link rel="icon" type="image/png" href="images/logo-joao.png">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+  
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  
   <style>
     * {
       margin: 0;
@@ -349,7 +354,7 @@
         <a href="index.html#sobre">Sobre</a>
         <a href="index.html#contato">Contato</a>
         <a href="projetos.html">Projetos</a>
-        <a href="login.html" class="btn-login">Login</a>
+        <a href="login-admin.html" class="btn-login">Login</a>
       </nav>
     </div>
   </header>
@@ -368,105 +373,10 @@
     </div>
   </div>
 
-  <main>
-    <!-- Projeto 1 -->
-    <article class="project-card" data-category="web">
-      <div class="project-image">
-        <div class="swiper project-swiper">
-          <div class="swiper-wrapper">
-            <div class="swiper-slide">
-              <img src="" alt="Quiz de Matemática - Imagem 1" />
-            </div>
-            <div class="swiper-slide">
-              <img src="" alt="Quiz de Matemática - Imagem 2" />
-            </div>
-            <div class="swiper-slide">
-              <img src="" alt="Quiz de Matemática - Imagem 3" />
-            </div>
-          </div>
-          <div class="swiper-button-prev"></div>
-          <div class="swiper-button-next"></div>
-          <div class="swiper-pagination"></div>
-        </div>
-      </div>
-      <div class="project-content">
-        <h2 class="project-title">Quiz de Matemática</h2>
-        <p class="project-description">
-          Quiz interativo com perguntas de múltipla escolha e feedback imediato para testar seus conhecimentos.
-        </p>
-        <div class="project-tech">
-          <span class="tech-tag">HTML</span>
-          <span class="tech-tag">CSS</span>
-          <span class="tech-tag">JavaScript</span>
-        </div>
-      </div>
-    </article>
-
-    <!-- Projeto 2 -->
-    <article class="project-card" data-category="backend">
-      <div class="project-image">
-        <div class="swiper project-swiper">
-          <div class="swiper-wrapper">
-            <div class="swiper-slide">
-              <img src="" alt="Banco de Dados Locadora - Imagem 1" />
-            </div>
-            <div class="swiper-slide">
-              <img src="" alt="Banco de Dados Locadora - Imagem 2" />
-            </div>
-            <div class="swiper-slide">
-              <img src="" alt="Banco de Dados Locadora - Imagem 3" />
-            </div>
-          </div>
-          <div class="swiper-button-prev"></div>
-          <div class="swiper-button-next"></div>
-          <div class="swiper-pagination"></div>
-        </div>
-      </div>
-      <div class="project-content">
-        <h2 class="project-title">Banco de Dados Locadora</h2>
-        <p class="project-description">
-          Sistema de banco de dados para gerenciar lojas, clientes e veículos de uma locadora de automóveis.
-        </p>
-        <div class="project-tech">
-          <span class="tech-tag">SQL</span>
-          <span class="tech-tag">Database</span>
-          <span class="tech-tag">Design</span>
-        </div>
-      </div>
-    </article>
-
-    <!-- Projeto 3 -->
-    <article class="project-card" data-category="mobile">
-      <div class="project-image">
-        <div class="swiper project-swiper">
-          <div class="swiper-wrapper">
-            <div class="swiper-slide">
-              <img src="" alt="Carrinho Autônomo - Imagem 1" />
-            </div>
-            <div class="swiper-slide">
-              <img src="" alt="Carrinho Autônomo - Imagem 2" />
-            </div>
-            <div class="swiper-slide">
-              <img src="" alt="Carrinho Autônomo - Imagem 3" />
-            </div>
-          </div>
-          <div class="swiper-button-prev"></div>
-          <div class="swiper-button-next"></div>
-          <div class="swiper-pagination"></div>
-        </div>
-      </div>
-      <div class="project-content">
-        <h2 class="project-title">Carrinho Autônomo</h2>
-        <p class="project-description">
-          Desenvolvimento de carrinho autônomo com navegação independente usando visão computacional e sensores.
-        </p>
-        <div class="project-tech">
-          <span class="tech-tag">Arduino</span>
-          <span class="tech-tag">Visão Computacional</span>
-          <span class="tech-tag">IoT</span>
-        </div>
-      </div>
-    </article>
+  <main id="projectsContainer">
+    <div style="text-align: center; color: #aaa; padding: 2rem;">
+      Carregando projetos...
+    </div>
   </main>
 
   <footer>
@@ -475,54 +385,136 @@
 
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
   <script>
-    // Initialize Swiper carousels
-    const swipers = document.querySelectorAll('.project-swiper');
-    swipers.forEach(swiperElement => {
-      new Swiper(swiperElement, {
-        loop: true,
-        autoplay: {
-          delay: 5000,
-          disableOnInteraction: false,
-        },
-        pagination: {
-          el: swiperElement.querySelector('.swiper-pagination'),
-          clickable: true,
-        },
-        navigation: {
-          nextEl: swiperElement.querySelector('.swiper-button-next'),
-          prevEl: swiperElement.querySelector('.swiper-button-prev'),
-        },
-      });
-    });
+    // Firebase Configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyALc7xbZ0iwtFRgPECXGWcWB0M8Q2q7Z3E",
+      authDomain: "portfoliodejoao.firebaseapp.com",
+      projectId: "portfoliodejoao",
+      storageBucket: "portfoliodejoao.firebasestorage.app",
+      messagingSenderId: "904540901550",
+      appId: "1:904540901550:web:56d0957f4bf5907174dd3f"
+    };
 
-    // Filter functionality
-    const filterBtns = document.querySelectorAll('.filter-btn');
-    const projectCards = document.querySelectorAll('.project-card');
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
 
-    filterBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        filterBtns.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
+    // Load projects from Firebase
+    async function loadProjects() {
+      try {
+        const snapshot = await db.collection('projects').get();
 
-        const filter = btn.getAttribute('data-filter');
+        const container = document.getElementById('projectsContainer');
 
-        projectCards.forEach(card => {
-          if (filter === 'all' || card.getAttribute('data-category') === filter) {
-            card.style.display = 'flex';
-            setTimeout(() => {
-              card.style.opacity = '1';
-              card.style.transform = 'scale(1)';
-            }, 0);
-          } else {
-            card.style.opacity = '0';
-            card.style.transform = 'scale(0.9)';
-            setTimeout(() => {
-              card.style.display = 'none';
-            }, 300);
+        if (snapshot.empty) {
+          container.innerHTML = '<p style="text-align: center; color: #aaa; padding: 2rem;">Nenhum projeto disponível no momento.</p>';
+          return;
+        }
+
+        // Create projects HTML
+        let projectsHTML = '';
+        snapshot.forEach(doc => {
+          const project = doc.data();
+          
+          // Validar se projeto tem dados completos
+          if (!project.title || !project.description || !project.category) {
+            return; // Pular projetos incompletos
           }
+          
+          const imageUrl = project.imageUrl || 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100" height="100"%3E%3Crect fill="%2300ffc8" width="100" height="100"/%3E%3C/svg%3E';
+          
+          projectsHTML += `
+            <article class="project-card" data-category="${project.category}">
+              <div class="project-image">
+                <div class="swiper project-swiper">
+                  <div class="swiper-wrapper">
+                    <div class="swiper-slide">
+                      <img src="${imageUrl}" alt="${project.title}" />
+                    </div>
+                  </div>
+                  <div class="swiper-button-prev"></div>
+                  <div class="swiper-button-next"></div>
+                  <div class="swiper-pagination"></div>
+                </div>
+              </div>
+              <div class="project-content">
+                <h2 class="project-title">${project.title}</h2>
+                <p class="project-description">${project.description}</p>
+                <div class="project-tech">
+                  ${(project.tech || []).map(t => `<span class="tech-tag">${t}</span>`).join('')}
+                </div>
+              </div>
+            </article>
+          `;
+        });
+
+        container.innerHTML = projectsHTML;
+
+        // Initialize Swiper carousels after loading projects
+        setTimeout(initSwipers, 100);
+
+        // Setup filter functionality
+        setupFilters();
+
+      } catch (error) {
+        console.error('Erro ao carregar projetos:', error);
+        document.getElementById('projectsContainer').innerHTML = '<p style="text-align: center; color: #ff4444; padding: 2rem;">Erro ao carregar projetos.</p>';
+      }
+    }
+
+    function initSwipers() {
+      const swipers = document.querySelectorAll('.project-swiper');
+      swipers.forEach(swiperElement => {
+        new Swiper(swiperElement, {
+          loop: true,
+          autoplay: {
+            delay: 5000,
+            disableOnInteraction: false,
+          },
+          pagination: {
+            el: swiperElement.querySelector('.swiper-pagination'),
+            clickable: true,
+          },
+          navigation: {
+            nextEl: swiperElement.querySelector('.swiper-button-next'),
+            prevEl: swiperElement.querySelector('.swiper-button-prev'),
+          },
         });
       });
-    });
+    }
+
+    function setupFilters() {
+      const filterBtns = document.querySelectorAll('.filter-btn');
+      const projectCards = document.querySelectorAll('.project-card');
+
+      filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          filterBtns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+
+          const filter = btn.getAttribute('data-filter');
+
+          projectCards.forEach(card => {
+            if (filter === 'all' || card.getAttribute('data-category') === filter) {
+              card.style.display = 'flex';
+              setTimeout(() => {
+                card.style.opacity = '1';
+                card.style.transform = 'scale(1)';
+              }, 0);
+            } else {
+              card.style.opacity = '0';
+              card.style.transform = 'scale(0.9)';
+              setTimeout(() => {
+                card.style.display = 'none';
+              }, 300);
+            }
+          });
+        });
+      });
+    }
+
+    // Load projects on page load
+    loadProjects();
+  </script>
   </script>
 </body>
 </html>

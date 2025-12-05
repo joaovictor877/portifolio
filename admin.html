@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - Gerenciar Projetos</title>
+  <link rel="icon" type="image/png" href="images/logo-joao.png">
+  
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    body {
+      background: #0a0a0a;
+      color: #ffffff;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 3rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid #2a2a2a;
+    }
+
+    .header h1 {
+      font-size: 2rem;
+      background: linear-gradient(135deg, #00ffc8 0%, #00b8ff 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .btn-logout {
+      padding: 0.75rem 1.5rem;
+      background: #ff4444;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+
+    .btn-logout:hover {
+      background: #ff2222;
+      transform: translateY(-2px);
+    }
+
+    /* Form Section */
+    .form-section {
+      background: #1e1e1e;
+      padding: 2rem;
+      border-radius: 12px;
+      border: 1px solid #2a2a2a;
+      margin-bottom: 3rem;
+    }
+
+    .form-section h2 {
+      margin-bottom: 1.5rem;
+      color: #00ffc8;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: #aaa;
+      font-weight: 500;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 0.75rem;
+      background: #0a0a0a;
+      border: 1px solid #2a2a2a;
+      border-radius: 8px;
+      color: #ffffff;
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: #00ffc8;
+      box-shadow: 0 0 0 2px rgba(0, 255, 200, 0.1);
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .tech-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .tech-input {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .tech-input input {
+      flex: 1;
+    }
+
+    .btn-add-tech {
+      padding: 0.75rem 1rem;
+      background: #00ffc8;
+      color: #0a0a0a;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+
+    .btn-add-tech:hover {
+      background: #00e6b0;
+      transform: translateY(-2px);
+    }
+
+    .tech-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(0, 255, 200, 0.1);
+      border: 1px solid #00ffc8;
+      color: #00ffc8;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+    }
+
+    .tech-tag button {
+      background: none;
+      border: none;
+      color: #00ffc8;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    /* Image Upload */
+    .image-upload {
+      border: 2px dashed #2a2a2a;
+      border-radius: 8px;
+      padding: 2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .image-upload:hover {
+      border-color: #00ffc8;
+      background: rgba(0, 255, 200, 0.05);
+    }
+
+    .image-preview {
+      max-width: 100%;
+      max-height: 200px;
+      margin-top: 1rem;
+      border-radius: 8px;
+    }
+
+    /* Buttons */
+    .btn-submit {
+      padding: 1rem 2rem;
+      background: linear-gradient(135deg, #00ffc8 0%, #00b8ff 100%);
+      color: #0a0a0a;
+      border: none;
+      border-radius: 50px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 1rem;
+    }
+
+    .btn-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(0, 255, 200, 0.3);
+    }
+
+    /* Projects List */
+    .projects-list {
+      display: grid;
+      gap: 2rem;
+    }
+
+    .project-item {
+      background: #1e1e1e;
+      padding: 1.5rem;
+      border-radius: 12px;
+      border: 1px solid #2a2a2a;
+      display: grid;
+      grid-template-columns: 150px 1fr auto;
+      gap: 2rem;
+      align-items: start;
+    }
+
+    .project-image-preview {
+      width: 150px;
+      height: 150px;
+      background: linear-gradient(135deg, #00ffc8 0%, #00b8ff 100%);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .project-image-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .project-info h3 {
+      color: #00ffc8;
+      margin-bottom: 0.5rem;
+    }
+
+    .project-info p {
+      color: #aaa;
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    .project-tech {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+
+    .tech-badge {
+      background: rgba(0, 255, 200, 0.1);
+      color: #00ffc8;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+    }
+
+    .project-actions {
+      display: flex;
+      gap: 0.5rem;
+      flex-direction: column;
+    }
+
+    .btn-edit, .btn-delete {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+
+    .btn-edit {
+      background: #00ffc8;
+      color: #0a0a0a;
+    }
+
+    .btn-edit:hover {
+      background: #00e6b0;
+    }
+
+    .btn-delete {
+      background: #ff4444;
+      color: white;
+    }
+
+    .btn-delete:hover {
+      background: #ff2222;
+    }
+
+    /* Status Messages */
+    .message {
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      display: none;
+    }
+
+    .message.success {
+      background: rgba(0, 255, 200, 0.1);
+      color: #00ffc8;
+      border: 1px solid #00ffc8;
+      display: block;
+    }
+
+    .message.error {
+      background: rgba(255, 68, 68, 0.1);
+      color: #ff4444;
+      border: 1px solid #ff4444;
+      display: block;
+    }
+
+    /* Loading */
+    .loading {
+      text-align: center;
+      padding: 2rem;
+      color: #aaa;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      .project-item {
+        grid-template-columns: 1fr;
+      }
+
+      .project-image-preview {
+        width: 100%;
+        height: 200px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <h1>📱 Gerenciador de Projetos</h1>
+      <button class="btn-logout" id="logoutBtn">Logout</button>
+    </div>
+
+    <!-- Messages -->
+    <div id="message" class="message"></div>
+
+    <!-- Add/Edit Project Form -->
+    <div class="form-section">
+      <h2 id="formTitle">Adicionar Novo Projeto</h2>
+      
+      <form id="projectForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="title">Título do Projeto *</label>
+            <input type="text" id="title" required>
+          </div>
+          <div class="form-group">
+            <label for="category">Categoria *</label>
+            <select id="category" required>
+              <option value="">Selecione...</option>
+              <option value="web">Web</option>
+              <option value="backend">Backend</option>
+              <option value="mobile">Mobile</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="description">Descrição *</label>
+          <textarea id="description" required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Tecnologias</label>
+          <div class="tech-input">
+            <input type="text" id="techInput" placeholder="Ex: HTML, CSS, JavaScript">
+            <button type="button" class="btn-add-tech" id="addTechBtn">Adicionar</button>
+          </div>
+          <div class="tech-tags" id="techTags"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="imageUpload">Imagem do Projeto</label>
+          <div class="image-upload" id="imageUpload">
+            <p>Clique ou arraste uma imagem aqui</p>
+            <input type="file" id="imageFile" accept="image/*" style="display: none;">
+          </div>
+          <img id="imagePreview" class="image-preview" style="display: none;">
+        </div>
+
+        <button type="submit" class="btn-submit" id="submitBtn">Adicionar Projeto</button>
+        <button type="button" class="btn-submit" id="cancelEditBtn" style="background: #666; display: none; margin-left: 1rem;">Cancelar</button>
+      </form>
+    </div>
+
+    <!-- Projects List -->
+    <div class="form-section">
+      <h2>Meus Projetos</h2>
+      <div id="projectsList" class="projects-list">
+        <div class="loading">Carregando projetos...</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Firebase Configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyALc7xbZ0iwtFRgPECXGWcWB0M8Q2q7Z3E",
+      authDomain: "portfoliodejoao.firebaseapp.com",
+      projectId: "portfoliodejoao",
+      storageBucket: "portfoliodejoao.firebasestorage.app",
+      messagingSenderId: "904540901550",
+      appId: "1:904540901550:web:56d0957f4bf5907174dd3f"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    const storage = firebase.storage();
+
+    let currentUser = null;
+    let editingProjectId = null;
+    let techList = [];
+    let selectedImageFile = null;
+
+    // Check authentication
+    auth.onAuthStateChanged((user) => {
+      if (!user) {
+        window.location.href = 'login.html';
+      } else {
+        currentUser = user;
+        loadProjects();
+      }
+    });
+
+    // Logout
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      auth.signOut().then(() => {
+        window.location.href = 'index.html';
+      });
+    });
+
+    // Show message
+    function showMessage(text, type = 'success') {
+      const msgEl = document.getElementById('message');
+      msgEl.textContent = text;
+      msgEl.className = `message ${type}`;
+      setTimeout(() => {
+        msgEl.className = 'message';
+      }, 3000);
+    }
+
+    // Tech tags
+    document.getElementById('addTechBtn').addEventListener('click', (e) => {
+      e.preventDefault();
+      const input = document.getElementById('techInput');
+      const tech = input.value.trim();
+      
+      if (tech && !techList.includes(tech)) {
+        techList.push(tech);
+        renderTechTags();
+        input.value = '';
+      }
+    });
+
+    function renderTechTags() {
+      const container = document.getElementById('techTags');
+      container.innerHTML = techList.map(tech => `
+        <div class="tech-tag">
+          ${tech}
+          <button type="button" onclick="removeTech('${tech}')">×</button>
+        </div>
+      `).join('');
+    }
+
+    function removeTech(tech) {
+      techList = techList.filter(t => t !== tech);
+      renderTechTags();
+    }
+
+    window.removeTech = removeTech;
+
+    // Image upload
+    const imageUpload = document.getElementById('imageUpload');
+    const imageFile = document.getElementById('imageFile');
+
+    imageUpload.addEventListener('click', () => imageFile.click());
+
+    imageFile.addEventListener('change', (e) => {
+      selectedImageFile = e.target.files[0];
+      if (selectedImageFile) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          document.getElementById('imagePreview').src = e.target.result;
+          document.getElementById('imagePreview').style.display = 'block';
+        };
+        reader.readAsDataURL(selectedImageFile);
+      }
+    });
+
+    // Form submit
+    document.getElementById('projectForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const projectData = {
+        title: document.getElementById('title').value,
+        description: document.getElementById('description').value,
+        category: document.getElementById('category').value,
+        tech: techList,
+        userId: currentUser.uid,
+        createdAt: new Date()
+      };
+
+      try {
+        let imageUrl = null;
+
+        // Upload image if selected
+        if (selectedImageFile) {
+          try {
+            const timestamp = Date.now();
+            const fileName = `${currentUser.uid}_${timestamp}`;
+            const ref = storage.ref(`projects/${fileName}`);
+            
+            // Upload com validação
+            const snapshot = await ref.put(selectedImageFile);
+            imageUrl = await snapshot.ref.getDownloadURL();
+            projectData.imageUrl = imageUrl;
+            console.log('Imagem enviada com sucesso:', imageUrl);
+          } catch (imgError) {
+            console.warn('Aviso: Imagem não foi enviada, mas projeto será criado sem ela', imgError);
+            // Continua mesmo sem imagem
+          }
+        }
+
+        if (editingProjectId) {
+          // Update existing
+          await db.collection('projects').doc(editingProjectId).update(projectData);
+          showMessage('Projeto atualizado com sucesso! ✅');
+          resetForm();
+        } else {
+          // Add new
+          await db.collection('projects').add(projectData);
+          showMessage('Projeto adicionado com sucesso! ✅');
+          resetForm();
+        }
+
+        loadProjects();
+      } catch (error) {
+        console.error('Erro:', error);
+        showMessage('Erro ao salvar projeto: ' + error.message, 'error');
+      }
+    });
+
+    function resetForm() {
+      document.getElementById('projectForm').reset();
+      techList = [];
+      renderTechTags();
+      selectedImageFile = null;
+      document.getElementById('imagePreview').style.display = 'none';
+      document.getElementById('imageFile').value = '';
+      editingProjectId = null;
+      document.getElementById('formTitle').textContent = 'Adicionar Novo Projeto';
+      document.getElementById('submitBtn').textContent = 'Adicionar Projeto';
+      document.getElementById('cancelEditBtn').style.display = 'none';
+    }
+
+    // Load projects
+    async function loadProjects() {
+      try {
+        const snapshot = await db.collection('projects')
+          .where('userId', '==', currentUser.uid)
+          .get();
+
+        const container = document.getElementById('projectsList');
+
+        if (snapshot.empty) {
+          container.innerHTML = '<p style="text-align: center; color: #aaa;">Nenhum projeto ainda. Crie seu primeiro! 🚀</p>';
+          return;
+        }
+
+        container.innerHTML = snapshot.docs.map(doc => {
+          const data = doc.data();
+          return `
+            <div class="project-item">
+              <div class="project-image-preview">
+                ${data.imageUrl ? `<img src="${data.imageUrl}" alt="${data.title}">` : '<span style="color: #aaa;">Sem imagem</span>'}
+              </div>
+              <div class="project-info">
+                <h3>${data.title}</h3>
+                <p>${data.description}</p>
+                <p><strong>Categoria:</strong> ${data.category}</p>
+                <div class="project-tech">
+                  ${data.tech.map(t => `<span class="tech-badge">${t}</span>`).join('')}
+                </div>
+              </div>
+              <div class="project-actions">
+                <button class="btn-edit" onclick="editProject('${doc.id}')">Editar</button>
+                <button class="btn-delete" onclick="deleteProject('${doc.id}')">Deletar</button>
+              </div>
+            </div>
+          `;
+        }).join('');
+      } catch (error) {
+        console.error('Erro ao carregar projetos:', error);
+        showMessage('Erro ao carregar projetos', 'error');
+      }
+    }
+
+    async function editProject(projectId) {
+      try {
+        const doc = await db.collection('projects').doc(projectId).get();
+        const data = doc.data();
+
+        document.getElementById('title').value = data.title;
+        document.getElementById('description').value = data.description;
+        document.getElementById('category').value = data.category;
+        techList = data.tech || [];
+        renderTechTags();
+
+        if (data.imageUrl) {
+          document.getElementById('imagePreview').src = data.imageUrl;
+          document.getElementById('imagePreview').style.display = 'block';
+        }
+
+        editingProjectId = projectId;
+        document.getElementById('formTitle').textContent = 'Editar Projeto';
+        document.getElementById('submitBtn').textContent = 'Atualizar Projeto';
+        document.getElementById('cancelEditBtn').style.display = 'inline-block';
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } catch (error) {
+        console.error('Erro:', error);
+        showMessage('Erro ao carregar projeto', 'error');
+      }
+    }
+
+    async function deleteProject(projectId) {
+      if (confirm('Tem certeza que deseja deletar este projeto?')) {
+        try {
+          await db.collection('projects').doc(projectId).delete();
+          showMessage('Projeto deletado com sucesso! ✅');
+          loadProjects();
+        } catch (error) {
+          console.error('Erro:', error);
+          showMessage('Erro ao deletar projeto', 'error');
+        }
+      }
+    }
+
+    document.getElementById('cancelEditBtn').addEventListener('click', resetForm);
+
+    window.editProject = editProject;
+    window.deleteProject = deleteProject;
+  </script>
+</body>
+</html>
