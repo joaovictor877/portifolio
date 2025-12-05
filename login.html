@@ -5,6 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login - João Victor</title>
   <link rel="icon" type="image/png" href="images/logo-joao.png">
+  
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  
   <style>
     * {
       box-sizing: border-box;
@@ -308,7 +314,7 @@
       <button type="submit" class="btn-submit">Entrar</button>
 
       <div class="signup-link">
-        Não tem conta? <a href="#">Cadastre-se aqui</a>
+        Não tem conta? <a href="#" id="cadastro-link">Cadastre-se aqui</a>
       </div>
 
       <div class="divider">ou</div>
@@ -329,9 +335,26 @@
   </div>
 
   <script>
+    // Firebase Configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyALc7xbZ0iwtFRgPECXGWcWB0M8Q2q7Z3E",
+      authDomain: "portfoliodejoao.firebaseapp.com",
+      projectId: "portfoliodejoao",
+      storageBucket: "portfoliodejoao.firebasestorage.app",
+      messagingSenderId: "904540901550",
+      appId: "1:904540901550:web:56d0957f4bf5907174dd3f",
+      measurementId: "G-V1S5BECW53"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
     const loginForm = document.getElementById('loginForm');
 
-    loginForm.addEventListener('submit', function(e) {
+    // Login com Email/Senha
+    loginForm.addEventListener('submit', async function(e) {
       e.preventDefault();
       
       const email = document.getElementById('email').value;
@@ -343,24 +366,125 @@
         return;
       }
 
-      // Simulação de login (você pode conectar com um backend aqui)
-      console.log('Email:', email);
-      console.log('Senha:', password);
-      
-      // Exemplo: redirecionar após sucesso
-      alert('Login realizado com sucesso! 🎉\n\nNota: Esta é uma demonstração. Para produção, conecte com um backend.');
-      
-      // localStorage.setItem('userEmail', email);
-      // window.location.href = 'dashboard.html';
+      try {
+        // Fazer login com Firebase
+        const userCredential = await auth.signInWithEmailAndPassword(email, password);
+        const user = userCredential.user;
+        
+        alert('Login realizado com sucesso! 🎉');
+        console.log('Usuário logado:', user.email);
+        
+        // Redirecionar para página principal
+        window.location.href = 'index.html';
+      } catch (error) {
+        console.error('Erro no login:', error);
+        
+        // Mensagens de erro em português
+        let errorMessage = 'Erro ao fazer login.';
+        
+        if (error.code === 'auth/user-not-found') {
+          errorMessage = 'Usuário não encontrado. Cadastre-se primeiro!';
+        } else if (error.code === 'auth/wrong-password') {
+          errorMessage = 'Senha incorreta. Tente novamente.';
+        } else if (error.code === 'auth/invalid-email') {
+          errorMessage = 'E-mail inválido.';
+        } else if (error.code === 'auth/too-many-requests') {
+          errorMessage = 'Muitas tentativas. Tente novamente mais tarde.';
+        }
+        
+        alert(errorMessage);
+      }
     });
 
+    // Login com Google
+    const googleProvider = new firebase.auth.GoogleAuthProvider();
+    
     // Social login buttons
     document.querySelectorAll('.social-btn').forEach(btn => {
-      btn.addEventListener('click', function(e) {
+      btn.addEventListener('click', async function(e) {
         e.preventDefault();
         const provider = this.textContent.includes('GitHub') ? 'GitHub' : 'Google';
-        alert(`Login com ${provider} (em desenvolvimento)`);
+        
+        if (provider === 'Google') {
+          try {
+            const result = await auth.signInWithPopup(googleProvider);
+            const user = result.user;
+            
+            alert(`Bem-vindo, ${user.displayName}! 🎉`);
+            console.log('Usuário Google:', user.email);
+            
+            window.location.href = 'index.html';
+          } catch (error) {
+            console.error('Erro no login Google:', error);
+            
+            let errorMessage = 'Erro ao fazer login com Google.';
+            
+            if (error.code === 'auth/popup-closed-by-user') {
+              errorMessage = 'Popup fechado. Tente novamente.';
+            } else if (error.code === 'auth/popup-blocked') {
+              errorMessage = 'Popup bloqueado pelo navegador. Permita popups para este site.';
+            } else if (error.code === 'auth/unauthorized-domain') {
+              errorMessage = 'Domínio não autorizado. Configure localhost:3000 no Firebase Console.\n\nVá em: Authentication → Settings → Authorized domains → Add domain';
+            } else if (error.code === 'auth/cancelled-popup-request') {
+              errorMessage = 'Requisição cancelada.';
+            }
+            
+            alert(errorMessage + '\n\nErro técnico: ' + error.code);
+          }
+        } else {
+          alert(`Login com ${provider} em desenvolvimento`);
+        }
       });
+    });
+
+    // Link de cadastro - cria conta automaticamente
+    document.getElementById('cadastro-link').addEventListener('click', async function(e) {
+      e.preventDefault();
+      
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      if (!email || !password) {
+        alert('Preencha email e senha para criar uma conta!');
+        return;
+      }
+
+      if (password.length < 6) {
+        alert('A senha deve ter pelo menos 6 caracteres!');
+        return;
+      }
+
+      try {
+        // Criar nova conta
+        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+        const user = userCredential.user;
+        
+        alert(`Conta criada com sucesso! 🎉\nBem-vindo, ${user.email}`);
+        console.log('Nova conta:', user.email);
+        
+        window.location.href = 'index.html';
+      } catch (error) {
+        console.error('Erro ao criar conta:', error);
+        
+        let errorMessage = 'Erro ao criar conta.';
+        
+        if (error.code === 'auth/email-already-in-use') {
+          errorMessage = 'Este email já está cadastrado. Faça login!';
+        } else if (error.code === 'auth/invalid-email') {
+          errorMessage = 'Email inválido.';
+        } else if (error.code === 'auth/weak-password') {
+          errorMessage = 'Senha muito fraca. Use pelo menos 6 caracteres.';
+        }
+        
+        alert(errorMessage);
+      }
+    });
+
+    // Verificar se usuário já está logado
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        console.log('Usuário já logado:', user.email);
+      }
     });
   </script>
  </body>
