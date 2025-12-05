@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="pt-BR">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - João Victor</title>
+  <link rel="icon" type="image/png" href="images/logo-joao.png">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, #1e1e1e 0%, #0a0a0a 100%);
+      color: #ffffff;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      overflow: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(0, 255, 200, 0.1) 0%, transparent 70%);
+      top: -250px;
+      right: -250px;
+      border-radius: 50%;
+      z-index: 0;
+    }
+
+    .login-container {
+      width: 100%;
+      max-width: 450px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .login-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .login-logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .login-logo img {
+      width: 50px;
+      height: 50px;
+      object-fit: contain;
+    }
+
+    .login-logo span {
+      font-size: 1.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #00ffc8 0%, #00b8ff 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .login-header h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, #00ffc8 0%, #00b8ff 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .login-header p {
+      color: #aaa;
+      font-size: 0.95rem;
+    }
+
+    .login-form {
+      background: #1e1e1e;
+      padding: 2.5rem;
+      border-radius: 20px;
+      border: 1px solid #2a2a2a;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: #00ffc8;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 1rem;
+      background: #0a0a0a;
+      border: 1px solid #2a2a2a;
+      border-radius: 10px;
+      color: #ffffff;
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+      transition: all 0.3s;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #00ffc8;
+      box-shadow: 0 0 15px rgba(0, 255, 200, 0.2);
+    }
+
+    .form-group input::placeholder {
+      color: #666;
+    }
+
+    .remember-forgot {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      font-size: 0.9rem;
+    }
+
+    .remember-forgot label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #aaa;
+      cursor: pointer;
+      margin: 0;
+    }
+
+    .remember-forgot a {
+      color: #00ffc8;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .remember-forgot a:hover {
+      color: #00b8ff;
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 1rem;
+      background: linear-gradient(135deg, #00ffc8 0%, #00b8ff 100%);
+      color: #0a0a0a;
+      border: none;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-bottom: 1rem;
+    }
+
+    .btn-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(0, 255, 200, 0.4);
+    }
+
+    .btn-submit:active {
+      transform: translateY(0);
+    }
+
+    .signup-link {
+      text-align: center;
+      color: #aaa;
+      font-size: 0.9rem;
+    }
+
+    .signup-link a {
+      color: #00ffc8;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s;
+    }
+
+    .signup-link a:hover {
+      color: #00b8ff;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin: 1.5rem 0;
+      color: #666;
+      font-size: 0.9rem;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #2a2a2a;
+    }
+
+    .social-login {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .social-btn {
+      padding: 0.75rem;
+      background: #0a0a0a;
+      border: 1px solid #2a2a2a;
+      border-radius: 10px;
+      color: #aaa;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      font-weight: 600;
+      transition: all 0.3s;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .social-btn:hover {
+      border-color: #00ffc8;
+      color: #00ffc8;
+      background: rgba(0, 255, 200, 0.05);
+    }
+
+    .back-link {
+      text-align: center;
+      margin-top: 1.5rem;
+    }
+
+    .back-link a {
+      color: #00ffc8;
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: all 0.3s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .back-link a:hover {
+      gap: 1rem;
+    }
+
+    @media (max-width: 480px) {
+      .login-form {
+        padding: 1.5rem;
+      }
+
+      .login-header h1 {
+        font-size: 1.5rem;
+      }
+
+      .social-login {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+ </head>
+ <body>
+  <div class="login-container">
+    <div class="login-header">
+      <div class="login-logo">
+        <img src="images/logo-joao.png" alt="Logo">
+        <span>JV</span>
+      </div>
+      <h1>Bem-vindo</h1>
+      <p>Entre em sua conta para continuar</p>
+    </div>
+
+    <form class="login-form" id="loginForm">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" placeholder="seu@email.com" required>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Senha</label>
+        <input type="password" id="password" name="password" placeholder="••••••••" required>
+      </div>
+
+      <div class="remember-forgot">
+        <label>
+          <input type="checkbox" name="remember">
+          <span>Lembrar-me</span>
+        </label>
+        <a href="#">Esqueci a senha</a>
+      </div>
+
+      <button type="submit" class="btn-submit">Entrar</button>
+
+      <div class="signup-link">
+        Não tem conta? <a href="#">Cadastre-se aqui</a>
+      </div>
+
+      <div class="divider">ou</div>
+
+      <div class="social-login">
+        <button type="button" class="social-btn">
+          <span>🔵</span> GitHub
+        </button>
+        <button type="button" class="social-btn">
+          <span>🔴</span> Google
+        </button>
+      </div>
+    </form>
+
+    <div class="back-link">
+        <a href="/">← Voltar ao portfólio</a>
+    </div>
+  </div>
+
+  <script>
+    const loginForm = document.getElementById('loginForm');
+
+    loginForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      // Validação simples
+      if (!email || !password) {
+        alert('Por favor, preencha todos os campos!');
+        return;
+      }
+
+      // Simulação de login (você pode conectar com um backend aqui)
+      console.log('Email:', email);
+      console.log('Senha:', password);
+      
+      // Exemplo: redirecionar após sucesso
+      alert('Login realizado com sucesso! 🎉\n\nNota: Esta é uma demonstração. Para produção, conecte com um backend.');
+      
+      // localStorage.setItem('userEmail', email);
+      // window.location.href = 'dashboard.html';
+    });
+
+    // Social login buttons
+    document.querySelectorAll('.social-btn').forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        const provider = this.textContent.includes('GitHub') ? 'GitHub' : 'Google';
+        alert(`Login com ${provider} (em desenvolvimento)`);
+      });
+    });
+  </script>
+ </body>
+</html>

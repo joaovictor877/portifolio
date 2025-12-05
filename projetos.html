@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Projetos - João Victor</title>
+  <link rel="icon" type="image/png" href="images/logo-joao.png">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      background: #0a0a0a;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      line-height: 1.5;
+      color: #ffffff;
+    }
+
+    /* Header */
+    .header {
+      width: 100%;
+      padding: 1.5rem 2rem;
+      background: rgba(10, 10, 10, 0.95);
+      border-bottom: 1px solid #2a2a2a;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(10px);
+    }
+
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 1.3rem;
+      background: linear-gradient(135deg, #00ffc8 0%, #00b8ff 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .header-logo img {
+      width: 50px;
+      height: 50px;
+      object-fit: contain;
+    }
+
+    .header-nav {
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .header-nav a {
+      color: #aaa;
+      text-decoration: none;
+      transition: color 0.3s;
+      font-weight: 500;
+    }
+
+    .header-nav a:hover {
+      color: #00ffc8;
+    }
+
+    .btn-login {
+      padding: 0.75rem 1.5rem;
+      background: transparent;
+      color: #00ffc8;
+      text-decoration: none;
+      border: 2px solid #00ffc8;
+      border-radius: 50px;
+      font-weight: 600;
+      transition: all 0.3s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-login:hover {
+      background: rgba(0, 255, 200, 0.1);
+      color: #00ffc8;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 255, 200, 0.2);
+    }
+
+    /* Projects Header Section */
+    .projects-section {
+      text-align: center;
+      padding: 3rem 2rem 2rem;
+      background: linear-gradient(135deg, #1e1e1e 0%, #0a0a0a 100%);
+    }
+
+    .projects-header h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin: 0 0 1rem 0;
+      background: linear-gradient(135deg, #00ffc8 0%, #00b8ff 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .projects-header p {
+      font-size: 1.1rem;
+      color: #aaa;
+      margin: 0;
+    }
+
+    /* Filters */
+    .project-filters {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin: 2rem 0;
+    }
+
+    .filter-btn {
+      padding: 0.75rem 1.5rem;
+      background: transparent;
+      color: #aaa;
+      border: 2px solid #2a2a2a;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .filter-btn:hover {
+      border-color: #00ffc8;
+      color: #00ffc8;
+    }
+
+    .filter-btn.active {
+      border-color: #00ffc8;
+      color: #00ffc8;
+      background: rgba(0, 255, 200, 0.1);
+    }
+
+    /* Main */
+    main {
+      flex-grow: 1;
+      max-width: 1280px;
+      margin: 2rem auto 4rem;
+      padding: 0 4%;
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 2.5rem;
+    }
+
+    /* Card do projeto */
+    .project-card {
+      background-color: #1e1e1e;
+      border-radius: 12px;
+      border: 1px solid #2a2a2a;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .project-card:hover {
+      transform: translateY(-10px);
+      border-color: #00ffc8;
+      box-shadow: 0 16px 40px rgba(0, 255, 200, 0.2);
+    }
+
+    /* Project Image */
+    .project-image {
+      width: 100%;
+      height: 200px;
+      background: linear-gradient(135deg, #00ffc8 0%, #00b8ff 100%);
+      border-bottom: 1px solid #2a2a2a;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .swiper {
+      width: 100%;
+      height: 100%;
+    }
+
+    .swiper-slide {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+    }
+
+    .swiper-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Swiper Navigation */
+    .swiper-button-next,
+    .swiper-button-prev {
+      color: #00ffc8;
+      background: rgba(0, 255, 200, 0.2);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .swiper-button-next:after,
+    .swiper-button-prev:after {
+      font-size: 18px;
+    }
+
+    .swiper-pagination-bullet {
+      background: rgba(255, 255, 255, 0.5);
+    }
+
+    .swiper-pagination-bullet-active {
+      background: #00ffc8;
+    }
+
+    .project-content {
+      padding: 1.5rem 2rem;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .project-title {
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+      color: #00ffc8;
+    }
+
+    .project-description {
+      font-size: 1rem;
+      color: #aaa;
+      flex-grow: 1;
+      line-height: 1.5;
+      margin-bottom: 1.25rem;
+    }
+
+    .project-tech {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 0;
+    }
+
+    .tech-tag {
+      background: rgba(0, 255, 200, 0.1);
+      color: #00ffc8;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      border: 1px solid rgba(0, 255, 200, 0.3);
+    }
+
+    /* Footer */
+    footer {
+      background-color: #000;
+      color: #666;
+      text-align: center;
+      padding: 1rem 4%;
+      font-size: 0.9rem;
+      box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.3);
+      border-top: 1px solid #1e1e1e;
+    }
+
+    /* Responsividade */
+    @media (max-width: 900px) {
+      .header-nav {
+        gap: 1rem;
+      }
+
+      main {
+        margin: 2rem auto 3rem;
+        gap: 2rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .header {
+        padding: 1.5rem 1rem;
+      }
+
+      .header-nav {
+        gap: 0.5rem;
+        font-size: 0.9rem;
+      }
+
+      .projects-header h1 {
+        font-size: 1.8rem;
+      }
+
+      main {
+        margin: 1.5rem 1rem 2rem;
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+
+      .project-content {
+        padding: 1rem 1.5rem;
+      }
+
+      .project-title {
+        font-size: 1.3rem;
+      }
+
+      .project-description {
+        font-size: 0.95rem;
+        margin-bottom: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-content">
+      <a href="/" class="header-logo">
+        <img src="images/logo-joao.png" alt="Logo João Victor">
+        <span>JV</span>
+      </a>
+      <nav class="header-nav">
+        <a href="/sobre">Sobre</a>
+        <a href="/contato">Contato</a>
+        <a href="/projetos">Projetos</a>
+        <a href="/login" class="btn-login">Login</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="projects-section">
+    <div class="projects-header">
+      <h1>Meus Projetos</h1>
+      <p>Confira os projetos que desenvolvi durante minha jornada na tecnologia</p>
+    </div>
+
+    <div class="project-filters">
+      <button class="filter-btn active" data-filter="all">Todos</button>
+      <button class="filter-btn" data-filter="web">Web</button>
+      <button class="filter-btn" data-filter="backend">Backend</button>
+      <button class="filter-btn" data-filter="mobile">Mobile</button>
+    </div>
+  </div>
+
+  <main>
+    <!-- Projeto 1 -->
+    <article class="project-card" data-category="web">
+      <div class="project-image">
+        <div class="swiper project-swiper">
+          <div class="swiper-wrapper">
+            <div class="swiper-slide">
+              <img src="" alt="Quiz de Matemática - Imagem 1" />
+            </div>
+            <div class="swiper-slide">
+              <img src="" alt="Quiz de Matemática - Imagem 2" />
+            </div>
+            <div class="swiper-slide">
+              <img src="" alt="Quiz de Matemática - Imagem 3" />
+            </div>
+          </div>
+          <div class="swiper-button-prev"></div>
+          <div class="swiper-button-next"></div>
+          <div class="swiper-pagination"></div>
+        </div>
+      </div>
+      <div class="project-content">
+        <h2 class="project-title">Quiz de Matemática</h2>
+        <p class="project-description">
+          Quiz interativo com perguntas de múltipla escolha e feedback imediato para testar seus conhecimentos.
+        </p>
+        <div class="project-tech">
+          <span class="tech-tag">HTML</span>
+          <span class="tech-tag">CSS</span>
+          <span class="tech-tag">JavaScript</span>
+        </div>
+      </div>
+    </article>
+
+    <!-- Projeto 2 -->
+    <article class="project-card" data-category="backend">
+      <div class="project-image">
+        <div class="swiper project-swiper">
+          <div class="swiper-wrapper">
+            <div class="swiper-slide">
+              <img src="" alt="Banco de Dados Locadora - Imagem 1" />
+            </div>
+            <div class="swiper-slide">
+              <img src="" alt="Banco de Dados Locadora - Imagem 2" />
+            </div>
+            <div class="swiper-slide">
+              <img src="" alt="Banco de Dados Locadora - Imagem 3" />
+            </div>
+          </div>
+          <div class="swiper-button-prev"></div>
+          <div class="swiper-button-next"></div>
+          <div class="swiper-pagination"></div>
+        </div>
+      </div>
+      <div class="project-content">
+        <h2 class="project-title">Banco de Dados Locadora</h2>
+        <p class="project-description">
+          Sistema de banco de dados para gerenciar lojas, clientes e veículos de uma locadora de automóveis.
+        </p>
+        <div class="project-tech">
+          <span class="tech-tag">SQL</span>
+          <span class="tech-tag">Database</span>
+          <span class="tech-tag">Design</span>
+        </div>
+      </div>
+    </article>
+
+    <!-- Projeto 3 -->
+    <article class="project-card" data-category="mobile">
+      <div class="project-image">
+        <div class="swiper project-swiper">
+          <div class="swiper-wrapper">
+            <div class="swiper-slide">
+              <img src="" alt="Carrinho Autônomo - Imagem 1" />
+            </div>
+            <div class="swiper-slide">
+              <img src="" alt="Carrinho Autônomo - Imagem 2" />
+            </div>
+            <div class="swiper-slide">
+              <img src="" alt="Carrinho Autônomo - Imagem 3" />
+            </div>
+          </div>
+          <div class="swiper-button-prev"></div>
+          <div class="swiper-button-next"></div>
+          <div class="swiper-pagination"></div>
+        </div>
+      </div>
+      <div class="project-content">
+        <h2 class="project-title">Carrinho Autônomo</h2>
+        <p class="project-description">
+          Desenvolvimento de carrinho autônomo com navegação independente usando visão computacional e sensores.
+        </p>
+        <div class="project-tech">
+          <span class="tech-tag">Arduino</span>
+          <span class="tech-tag">Visão Computacional</span>
+          <span class="tech-tag">IoT</span>
+        </div>
+      </div>
+    </article>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Portfólio de João. Todos os direitos reservados.</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  <script>
+    // Initialize Swiper carousels
+    const swipers = document.querySelectorAll('.project-swiper');
+    swipers.forEach(swiperElement => {
+      new Swiper(swiperElement, {
+        loop: true,
+        autoplay: {
+          delay: 5000,
+          disableOnInteraction: false,
+        },
+        pagination: {
+          el: swiperElement.querySelector('.swiper-pagination'),
+          clickable: true,
+        },
+        navigation: {
+          nextEl: swiperElement.querySelector('.swiper-button-next'),
+          prevEl: swiperElement.querySelector('.swiper-button-prev'),
+        },
+      });
+    });
+
+    // Filter functionality
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const projectCards = document.querySelectorAll('.project-card');
+
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const filter = btn.getAttribute('data-filter');
+
+        projectCards.forEach(card => {
+          if (filter === 'all' || card.getAttribute('data-category') === filter) {
+            card.style.display = 'flex';
+            setTimeout(() => {
+              card.style.opacity = '1';
+              card.style.transform = 'scale(1)';
+            }, 0);
+          } else {
+            card.style.opacity = '0';
+            card.style.transform = 'scale(0.9)';
+            setTimeout(() => {
+              card.style.display = 'none';
+            }, 300);
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # Remove .html extension
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^([a-zA-Z0-9_\-]+)/?$ $1.html [L]
+
+  # Redirect .html URLs to non-.html URLs
+  RewriteCond %{REQUEST_URI} \.html$
+  RewriteRule ^(.*)\.html$ /$1 [R=301,L]
+
+  # Handle root path to index.html
+  RewriteRule ^$ index.html [QSA,L]
+</IfModule>
