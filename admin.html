@@ -580,23 +580,21 @@
       };
 
       try {
-        let imageUrl = null;
-
-        // Upload image if selected
+        // Upload image if selected (OPTIONAL)
         if (selectedImageFile) {
           try {
             const timestamp = Date.now();
             const fileName = `${currentUser.uid}_${timestamp}`;
             const ref = storage.ref(`projects/${fileName}`);
             
-            // Upload com validação
+            console.log('Iniciando upload de imagem...');
             const snapshot = await ref.put(selectedImageFile);
-            imageUrl = await snapshot.ref.getDownloadURL();
+            const imageUrl = await snapshot.ref.getDownloadURL();
             projectData.imageUrl = imageUrl;
             console.log('Imagem enviada com sucesso:', imageUrl);
           } catch (imgError) {
-            console.warn('Aviso: Imagem não foi enviada, mas projeto será criado sem ela', imgError);
-            // Continua mesmo sem imagem
+            console.warn('Aviso: Imagem não foi enviada, mas projeto será criado', imgError);
+            // NÃO inclui imageUrl se falhar
           }
         }
 
