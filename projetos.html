@@ -18,6 +18,11 @@
       font-family: 'Inter', sans-serif;
     }
 
+    html {
+      overflow-x: hidden;
+      width: 100%;
+    }
+
     body {
       background: #0a0a0a;
       min-height: 100vh;
@@ -25,6 +30,9 @@
       flex-direction: column;
       line-height: 1.5;
       color: #ffffff;
+      overflow-x: hidden;
+      width: 100%;
+      position: relative;
     }
 
     /* Header */
@@ -169,6 +177,7 @@
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
       gap: 2.5rem;
+      overflow-x: hidden;
     }
 
     /* Card do projeto */
@@ -303,40 +312,190 @@
       main {
         margin: 2rem auto 3rem;
         gap: 2rem;
+        padding: 0 3%;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .header {
+        padding: 1rem;
+      }
+
+      .header-content {
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+
+      .header-nav {
+        gap: 0.75rem;
+        font-size: 0.85rem;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .btn-login {
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+      }
+
+      .projects-section {
+        padding: 2rem 1rem 1.5rem;
+      }
+
+      .projects-header h1 {
+        font-size: 2rem;
+      }
+
+      .projects-header p {
+        font-size: 1rem;
+      }
+
+      .project-filters {
+        gap: 0.5rem;
+        margin: 1.5rem 0;
+      }
+
+      .filter-btn {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.9rem;
+      }
+
+      main {
+        margin: 1.5rem auto 2rem;
+        padding: 0 5%;
+        gap: 2rem;
+        grid-template-columns: 1fr;
+        max-width: 500px;
+      }
+
+      .project-card {
+        max-width: 100%;
+        margin: 0 auto;
+      }
+
+      .project-image {
+        height: 250px;
+      }
+
+      .project-content {
+        padding: 1.25rem 1.5rem;
+      }
+
+      .project-title {
+        font-size: 1.4rem;
+      }
+
+      .project-description {
+        font-size: 0.95rem;
+      }
+
+      .swiper-button-next,
+      .swiper-button-prev {
+        width: 35px;
+        height: 35px;
+      }
+
+      .swiper-button-next:after,
+      .swiper-button-prev:after {
+        font-size: 16px;
       }
     }
 
     @media (max-width: 480px) {
       .header {
-        padding: 1.5rem 1rem;
+        padding: 0.75rem 0.5rem;
+      }
+
+      .header-logo {
+        font-size: 1.1rem;
+      }
+
+      .header-logo img {
+        width: 40px;
+        height: 40px;
       }
 
       .header-nav {
         gap: 0.5rem;
-        font-size: 0.9rem;
+        font-size: 0.8rem;
+      }
+
+      .btn-login {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.8rem;
+      }
+
+      .projects-section {
+        padding: 1.5rem 0.75rem 1rem;
       }
 
       .projects-header h1 {
-        font-size: 1.8rem;
+        font-size: 1.6rem;
+      }
+
+      .projects-header p {
+        font-size: 0.9rem;
+      }
+
+      .project-filters {
+        gap: 0.4rem;
+        margin: 1rem 0;
+      }
+
+      .filter-btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
       }
 
       main {
-        margin: 1.5rem 1rem 2rem;
-        grid-template-columns: 1fr;
+        margin: 1rem auto 1.5rem;
+        padding: 0 4%;
         gap: 1.5rem;
+        grid-template-columns: 1fr;
+        max-width: 100%;
+      }
+
+      .project-card {
+        max-width: 100%;
+        margin: 0;
+      }
+
+      .project-image {
+        height: 220px;
       }
 
       .project-content {
-        padding: 1rem 1.5rem;
+        padding: 1rem 1.25rem;
       }
 
       .project-title {
-        font-size: 1.3rem;
+        font-size: 1.25rem;
       }
 
       .project-description {
-        font-size: 0.95rem;
-        margin-bottom: 1rem;
+        font-size: 0.9rem;
+        margin-bottom: 0.75rem;
+      }
+
+      .tech-tag {
+        font-size: 0.75rem;
+        padding: 0.2rem 0.6rem;
+      }
+
+      .swiper-button-next,
+      .swiper-button-prev {
+        width: 30px;
+        height: 30px;
+      }
+
+      .swiper-button-next:after,
+      .swiper-button-prev:after {
+        font-size: 14px;
+      }
+
+      footer {
+        padding: 0.75rem 1rem;
+        font-size: 0.8rem;
       }
     }
   </style>
