@@ -43,7 +43,10 @@ export default async function handler(req, res) {
     }
 
     if (req.method === 'POST') {
-      const body = req.body || {};
+      let body = req.body || {};
+      if (typeof body === 'string') {
+        try { body = JSON.parse(body); } catch {}
+      }
       const { action, project } = body;
       let data = await readProjects();
       data.projects = data.projects || [];
@@ -53,7 +56,7 @@ export default async function handler(req, res) {
         const newProject = { id, ...project };
         data.projects.unshift(newProject);
         await writeProjects(data);
-        res.status(200).json({ ok: true, id });
+        res.status(200).json({ ok: true, id, projects: data.projects });
         return;
       }
 
@@ -62,7 +65,7 @@ export default async function handler(req, res) {
         if (!id) return res.status(400).json({ error: 'Missing id' });
         data.projects = data.projects.map(p => (p.id === id ? { ...p, ...project } : p));
         await writeProjects(data);
-        res.status(200).json({ ok: true });
+        res.status(200).json({ ok: true, projects: data.projects });
         return;
       }
 
@@ -71,7 +74,7 @@ export default async function handler(req, res) {
         if (!id) return res.status(400).json({ error: 'Missing id' });
         data.projects = data.projects.filter(p => p.id !== id);
         await writeProjects(data);
-        res.status(200).json({ ok: true });
+        res.status(200).json({ ok: true, projects: data.projects });
         return;
       }
 

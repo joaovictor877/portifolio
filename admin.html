@@ -586,10 +586,16 @@
           body: JSON.stringify(body)
         });
         if (!saveResp.ok) throw new Error('Falha ao salvar projeto');
+        const savedJson = await saveResp.json().catch(() => ({}));
 
         showMessage(editingProjectId ? 'Projeto atualizado com sucesso! ✅' : 'Projeto adicionado com sucesso! ✅');
         resetForm();
-        await loadProjects();
+        if (savedJson && Array.isArray(savedJson.projects)) {
+          projectsCache = savedJson.projects;
+          renderProjects();
+        } else {
+          await loadProjects();
+        }
       } catch (error) {
         console.error('Erro:', error);
         showMessage('Erro ao salvar projeto: ' + error.message, 'error');
@@ -611,38 +617,41 @@
       document.getElementById('cancelEditBtn').style.display = 'none';
     }
 
+    function renderProjects() {
+      const container = document.getElementById('projectsList');
+      if (!projectsCache.length) {
+        container.innerHTML = '<p style="text-align: center; color: #aaa;">Nenhum projeto ainda. Crie seu primeiro! 🚀</p>';
+        return;
+      }
+
+      container.innerHTML = projectsCache.map(p => `
+        <div class="project-item">
+          <div class="project-image-preview">
+            ${p.imageUrl ? `<img src="${p.imageUrl}" alt="${p.title}">` : '<span style="color: #aaa;">Sem imagem</span>'}
+          </div>
+          <div class="project-info">
+            <h3>${p.title}</h3>
+            <p>${p.description}</p>
+            <p><strong>Categoria:</strong> ${p.category}</p>
+            <div class="project-tech">
+              ${(p.tech || []).map(t => `<span class="tech-badge">${t}</span>`).join('')}
+            </div>
+          </div>
+          <div class="project-actions">
+            <button class="btn-edit" onclick="editProject('${p.id}')">Editar</button>
+            <button class="btn-delete" onclick="deleteProject('${p.id}')">Deletar</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
     // Load projects
     async function loadProjects() {
       try {
         const resp = await fetch('/api/projects', { cache: 'no-store' });
         const data = await resp.json();
         projectsCache = data.projects || [];
-
-        const container = document.getElementById('projectsList');
-        if (!projectsCache.length) {
-          container.innerHTML = '<p style="text-align: center; color: #aaa;">Nenhum projeto ainda. Crie seu primeiro! 🚀</p>';
-          return;
-        }
-
-        container.innerHTML = projectsCache.map(p => `
-          <div class="project-item">
-            <div class="project-image-preview">
-              ${p.imageUrl ? `<img src="${p.imageUrl}" alt="${p.title}">` : '<span style="color: #aaa;">Sem imagem</span>'}
-            </div>
-            <div class="project-info">
-              <h3>${p.title}</h3>
-              <p>${p.description}</p>
-              <p><strong>Categoria:</strong> ${p.category}</p>
-              <div class="project-tech">
-                ${(p.tech || []).map(t => `<span class="tech-badge">${t}</span>`).join('')}
-              </div>
-            </div>
-            <div class="project-actions">
-              <button class="btn-edit" onclick="editProject('${p.id}')">Editar</button>
-              <button class="btn-delete" onclick="deleteProject('${p.id}')">Deletar</button>
-            </div>
-          </div>
-        `).join('');
+        renderProjects();
       } catch (error) {
         console.error('Erro ao carregar projetos:', error);
         showMessage('Erro ao carregar projetos', 'error');
@@ -686,8 +695,14 @@
             body: JSON.stringify({ action: 'delete', id: projectId })
           });
           if (!resp.ok) throw new Error('Falha ao deletar');
+          const delJson = await resp.json().catch(() => ({}));
           showMessage('Projeto deletado com sucesso! ✅');
-          await loadProjects();
+          if (delJson && Array.isArray(delJson.projects)) {
+            projectsCache = delJson.projects;
+            renderProjects();
+          } else {
+            await loadProjects();
+          }
         } catch (error) {
           console.error('Erro:', error);
           showMessage('Erro ao deletar projeto', 'error');
