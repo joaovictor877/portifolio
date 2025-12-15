@@ -289,11 +289,8 @@
         <div class="divider">ou</div>
 
         <div class="social-buttons">
-          <button type="button" class="social-btn">
-            <span>🐙</span> GitHub
-          </button>
-          <button type="button" class="social-btn">
-            <span>🔴</span> Google
+          <button type="button" class="social-btn" id="googleLoginBtn">
+            <span><img src="images/google-icon-logo-svgrepo-com.svg" height="20px" alt=""></span> Google
           </button>
         </div>
       </form>
@@ -399,26 +396,17 @@
     // Login com Google
     const googleProvider = new firebase.auth.GoogleAuthProvider();
     
-    document.querySelectorAll('.social-btn').forEach(btn => {
-      btn.addEventListener('click', async function(e) {
-        e.preventDefault();
-        const isGoogleBtn = this.textContent.includes('Google');
-        
-        if (isGoogleBtn) {
-          try {
-            const result = await auth.signInWithPopup(googleProvider);
-            const user = result.user;
-            
-            alert(`Bem-vindo ao Admin, ${user.displayName}! 🎉`);
-            window.location.href = 'admin.html';
-          } catch (error) {
-            console.error('Erro no login Google:', error);
-            alert('Erro ao fazer login com Google.');
-          }
-        } else {
-          alert('Login com GitHub em desenvolvimento');
-        }
-      });
+    document.getElementById('googleLoginBtn').addEventListener('click', async function(e) {
+      e.preventDefault();
+      try {
+        const result = await auth.signInWithPopup(googleProvider);
+        const user = result.user;
+        alert(`Bem-vindo ao Admin, ${user.displayName}! 🎉`);
+        window.location.href = 'admin.html';
+      } catch (error) {
+        console.error('Erro no login Google:', error);
+        alert('Erro ao fazer login com Google.');
+      }
     });
 
     // Verificar se usuário já está logado
