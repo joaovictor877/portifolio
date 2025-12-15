@@ -312,25 +312,11 @@
           <input type="checkbox" name="remember">
           <span>Lembrar-me</span>
         </label>
-        <a href="#">Esqueci a senha</a>
+        <a href="#" id="forgot-link">Esqueci a senha</a>
       </div>
 
       <button type="submit" class="btn-submit">Entrar</button>
 
-      <div class="signup-link">
-        Não tem conta? <a href="#" id="cadastro-link">Cadastre-se aqui</a>
-      </div>
-
-      <div class="divider">ou</div>
-
-      <div class="social-login">
-        <button type="button" class="social-btn">
-          <span>🔵</span> GitHub
-        </button>
-        <button type="button" class="social-btn">
-          <span>🔴</span> Google
-        </button>
-      </div>
     </form>
 
     <div class="back-link">
@@ -378,8 +364,8 @@
         alert('Login realizado com sucesso! 🎉');
         console.log('Usuário logado:', user.email);
         
-        // Redirecionar para página principal
-        window.location.href = 'index.html';
+        // Redirecionar para admin
+        window.location.href = 'admin.html';
       } catch (error) {
         console.error('Erro no login:', error);
         
@@ -400,87 +386,23 @@
       }
     });
 
-    // Login com Google
-    const googleProvider = new firebase.auth.GoogleAuthProvider();
-    
-    // Social login buttons
-    document.querySelectorAll('.social-btn').forEach(btn => {
-      btn.addEventListener('click', async function(e) {
-        e.preventDefault();
-        const provider = this.textContent.includes('GitHub') ? 'GitHub' : 'Google';
-        
-        if (provider === 'Google') {
-          try {
-            const result = await auth.signInWithPopup(googleProvider);
-            const user = result.user;
-            
-            alert(`Bem-vindo, ${user.displayName}! 🎉`);
-            console.log('Usuário Google:', user.email);
-            
-            window.location.href = 'index.html';
-          } catch (error) {
-            console.error('Erro no login Google:', error);
-            
-            let errorMessage = 'Erro ao fazer login com Google.';
-            
-            if (error.code === 'auth/popup-closed-by-user') {
-              errorMessage = 'Popup fechado. Tente novamente.';
-            } else if (error.code === 'auth/popup-blocked') {
-              errorMessage = 'Popup bloqueado pelo navegador. Permita popups para este site.';
-            } else if (error.code === 'auth/unauthorized-domain') {
-              errorMessage = 'Domínio não autorizado. Configure localhost:3000 no Firebase Console.\n\nVá em: Authentication → Settings → Authorized domains → Add domain';
-            } else if (error.code === 'auth/cancelled-popup-request') {
-              errorMessage = 'Requisição cancelada.';
-            }
-            
-            alert(errorMessage + '\n\nErro técnico: ' + error.code);
-          }
-        } else {
-          alert(`Login com ${provider} em desenvolvimento`);
-        }
-      });
-    });
-
-    // Link de cadastro - cria conta automaticamente
-    document.getElementById('cadastro-link').addEventListener('click', async function(e) {
+    // Esqueci a senha (reset por email)
+    document.getElementById('forgot-link').addEventListener('click', async function(e) {
       e.preventDefault();
-      
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-
-      if (!email || !password) {
-        alert('Preencha email e senha para criar uma conta!');
+      const email = document.getElementById('email').value.trim();
+      if (!email) {
+        alert('Digite seu e-mail no campo acima para receber o link de redefinição.');
         return;
       }
-
-      if (password.length < 6) {
-        alert('A senha deve ter pelo menos 6 caracteres!');
-        return;
-      }
-
       try {
-        // Criar nova conta
-        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-        const user = userCredential.user;
-        
-        alert(`Conta criada com sucesso! 🎉\nBem-vindo, ${user.email}`);
-        console.log('Nova conta:', user.email);
-        
-        window.location.href = 'index.html';
+        await auth.sendPasswordResetEmail(email);
+        alert('Enviamos um link de redefinição de senha para seu e-mail.');
       } catch (error) {
-        console.error('Erro ao criar conta:', error);
-        
-        let errorMessage = 'Erro ao criar conta.';
-        
-        if (error.code === 'auth/email-already-in-use') {
-          errorMessage = 'Este email já está cadastrado. Faça login!';
-        } else if (error.code === 'auth/invalid-email') {
-          errorMessage = 'Email inválido.';
-        } else if (error.code === 'auth/weak-password') {
-          errorMessage = 'Senha muito fraca. Use pelo menos 6 caracteres.';
-        }
-        
-        alert(errorMessage);
+        console.error('Erro ao enviar reset:', error);
+        let msg = 'Não foi possível enviar o e-mail de redefinição.';
+        if (error.code === 'auth/user-not-found') msg = 'Usuário não encontrado para este e-mail.';
+        if (error.code === 'auth/invalid-email') msg = 'E-mail inválido.';
+        alert(msg);
       }
     });
 
