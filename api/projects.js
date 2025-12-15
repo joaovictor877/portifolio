@@ -3,18 +3,28 @@ import { list, put } from '@vercel/blob';
 const PROJECTS_KEY = 'data/projects.json';
 
 async function readProjects() {
-  const { blobs } = await list({ prefix: PROJECTS_KEY });
-  const file = blobs.find(b => b.pathname === PROJECTS_KEY) || blobs[0];
-  if (!file) return { projects: [] };
-  const resp = await fetch(file.url);
-  if (!resp.ok) return { projects: [] };
-  return await resp.json();
+  try {
+    const { blobs } = await list({ prefix: 'data/' });
+    const file = blobs.find(b => b.pathname === PROJECTS_KEY);
+    if (!file) {
+      // Arquivo não existe, retorna vazio
+      return { projects: [] };
+    }
+    const resp = await fetch(file.url);
+    if (!resp.ok) return { projects: [] };
+    const json = await resp.json();
+    return json;
+  } catch (err) {
+    console.warn('readProjects error, returning empty:', err);
+    return { projects: [] };
+  }
 }
 
 async function writeProjects(data) {
   await put(PROJECTS_KEY, JSON.stringify(data, null, 2), {
     access: 'public',
-    contentType: 'application/json'
+    contentType: 'application/json',
+    addRandomSuffix: false
   });
 }
 
