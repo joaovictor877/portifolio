@@ -429,15 +429,13 @@
         </div>
 
         <div class="form-group">
-          <label for="imageUpload">Imagem do Projeto</label>
+          <label for="imageUpload">Imagens do Projeto</label>
           <div class="image-upload" id="imageUpload">
-            <p>Clique ou arraste uma imagem aqui</p>
-            <input type="file" id="imageFile" accept="image/*" style="display: none;">
+            <p>Clique ou arraste imagens aqui</p>
+            <input type="file" id="imageFile" accept="image/*" multiple style="display: none;">
           </div>
-          <div class="image-preview-container">
-            <img id="imagePreview" class="image-preview">
-            <button type="button" class="btn-remove-image" id="removeImageBtn" style="display: none;">×</button>
-          </div>
+          <div id="imageGallery" style="display:flex; gap:0.5rem; flex-wrap:wrap; margin-top:0.75rem;"></div>
+          <button type="button" class="btn-remove-image" id="removeAllImagesBtn" style="display: none; position: static; width:auto; height:auto; border-radius:8px; padding:0.5rem 0.75rem;">Remover todas</button>
         </div>
 
         <button type="submit" class="btn-submit" id="submitBtn">Adicionar Projeto</button>
@@ -458,7 +456,7 @@
     // Estado local
     let editingProjectId = null;
     let techList = [];
-    let selectedImageFile = null;
+    let selectedImages = [];
     let projectsCache = [];
 
     function sortProjectsByDateDesc(list) {
@@ -516,32 +514,41 @@
     // Image upload
     const imageUpload = document.getElementById('imageUpload');
     const imageFile = document.getElementById('imageFile');
-    const imagePreview = document.getElementById('imagePreview');
-    const removeImageBtn = document.getElementById('removeImageBtn');
+    const imageGallery = document.getElementById('imageGallery');
+    const removeAllImagesBtn = document.getElementById('removeAllImagesBtn');
 
     imageUpload.addEventListener('click', () => imageFile.click());
 
     imageFile.addEventListener('change', (e) => {
-      selectedImageFile = e.target.files[0];
-      if (selectedImageFile) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          imagePreview.src = e.target.result;
-          imagePreview.style.display = 'block';
-          removeImageBtn.style.display = 'flex';
-        };
-        reader.readAsDataURL(selectedImageFile);
-      }
+      const files = Array.from(e.target.files || []);
+      files.forEach(file => {
+        selectedImages.push(file);
+      });
+      renderGallery();
     });
 
-    // Remove image
-    removeImageBtn.addEventListener('click', (e) => {
+    function renderGallery() {
+      imageGallery.innerHTML = selectedImages.map((file, idx) => {
+        const url = URL.createObjectURL(file);
+        return `<div style="position:relative;width:100px;height:100px;border:1px solid #2a2a2a;border-radius:6px;overflow:hidden;">
+                  <img src="${url}" style="width:100%;height:100%;object-fit:cover;" />
+                  <button type="button" style="position:absolute;top:4px;right:4px;background:#ff4444;color:#fff;border:none;border-radius:50%;width:24px;height:24px;cursor:pointer;" onclick="removeImageAt(${idx})">×</button>
+                </div>`;
+      }).join('');
+      removeAllImagesBtn.style.display = selectedImages.length ? 'inline-block' : 'none';
+    }
+
+    function removeImageAt(idx) {
+      selectedImages.splice(idx, 1);
+      renderGallery();
+    }
+    window.removeImageAt = removeImageAt;
+
+    removeAllImagesBtn.addEventListener('click', (e) => {
       e.preventDefault();
-      selectedImageFile = null;
+      selectedImages = [];
       imageFile.value = '';
-      imagePreview.src = '';
-      imagePreview.style.display = 'none';
-      removeImageBtn.style.display = 'none';
+      renderGallery();
     });
 
     async function fileToBase64(file) {
@@ -566,19 +573,26 @@
       };
 
       try {
-        // Upload da imagem para Vercel Blob (opcional)
-        if (selectedImageFile) {
-          try {
-            const base64 = await fileToBase64(selectedImageFile);
-            const resp = await fetch('/api/upload', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ name: selectedImageFile.name, type: selectedImageFile.type, data: base64 })
-            });
-            const json = await resp.json();
-            if (resp.ok && json.url) projectData.imageUrl = json.url;
-          } catch (imgError) {
-            console.warn('Falha ao enviar imagem:', imgError);
+        // Upload das imagens para Vercel Blob (opcional)
+        if (selectedImages.length) {
+          projectData.imageUrls = [];
+          for (const file of selectedImages) {
+            try {
+              const base64 = await fileToBase64(file);
+              const resp = await fetch('/api/upload', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name: file.name, type: file.type, data: base64 })
+              });
+              const json = await resp.json();
+              if (resp.ok && json.url) projectData.imageUrls.push(json.url);
+            } catch (imgError) {
+              console.warn('Falha ao enviar imagem:', imgError);
+            }
+          }
+          // Compatibilidade: manter imageUrl como primeira imagem, se existir
+          if (!projectData.imageUrl && projectData.imageUrls.length) {
+            projectData.imageUrl = projectData.imageUrls[0];
           }
         }
 
@@ -610,11 +624,9 @@
       document.getElementById('projectForm').reset();
       techList = [];
       renderTechTags();
-      selectedImageFile = null;
-      imagePreview.src = '';
-      imagePreview.style.display = 'none';
-      removeImageBtn.style.display = 'none';
+      selectedImages = [];
       imageFile.value = '';
+      renderGallery();
       editingProjectId = null;
       document.getElementById('formTitle').textContent = 'Adicionar Novo Projeto';
       document.getElementById('submitBtn').textContent = 'Adicionar Projeto';
@@ -673,11 +685,16 @@
         techList = data.tech || [];
         renderTechTags();
 
-        if (data.imageUrl) {
-          imagePreview.src = data.imageUrl;
-          imagePreview.style.display = 'block';
-          removeImageBtn.style.display = 'flex';
-        }
+        const imgs = data.imageUrls || (data.imageUrl ? [data.imageUrl] : []);
+        selectedImages = [];
+        imageFile.value = '';
+        // Não temos os arquivos originais, mas exibimos como preview virtual
+        imageGallery.innerHTML = imgs.map((url) => (
+          `<div style="position:relative;width:100px;height:100px;border:1px solid #2a2a2a;border-radius:6px;overflow:hidden;">
+            <img src="${url}" style="width:100%;height:100%;object-fit:cover;" />
+          </div>`
+        )).join('');
+        removeAllImagesBtn.style.display = imgs.length ? 'inline-block' : 'none';
 
         editingProjectId = projectId;
         document.getElementById('formTitle').textContent = 'Editar Projeto';
