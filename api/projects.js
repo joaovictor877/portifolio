@@ -1,4 +1,4 @@
-import { list, put } from '@vercel/blob';
+import { list, put, head } from '@vercel/blob';
 
 const PROJECTS_KEY = 'data/projects.json';
 const LOG = process.env.LOG_API !== '0';
@@ -13,15 +13,24 @@ function logError(...args) {
 async function readProjects() {
   try {
     const start = Date.now();
-    const { blobs } = await list({ prefix: 'data/' });
-    const file = blobs.find(b => b.pathname === PROJECTS_KEY);
-    if (!file) {
-      // Arquivo não existe, retorna vazio
-      log('readProjects: arquivo inexistente, retornando lista vazia');
-      return { projects: [] };
+    // Primeiro tenta um head() direto na chave para evitar inconsistência do list()
+    let meta;
+    try {
+      meta = await head(PROJECTS_KEY);
+    } catch {}
+
+    if (!meta) {
+      const { blobs } = await list({ prefix: 'data/' });
+      const file = blobs.find(b => b.pathname === PROJECTS_KEY);
+      if (!file) {
+        log('readProjects: arquivo inexistente, retornando lista vazia');
+        return { projects: [] };
+      }
+      meta = file;
     }
+
     // Forçar leitura sem cache do JSON no Blob
-    const resp = await fetch(`${file.url}?t=${Date.now()}`, { cache: 'no-store' });
+    const resp = await fetch(`${meta.url}?t=${Date.now()}`, { cache: 'no-store' });
     if (!resp.ok) return { projects: [] };
     const json = await resp.json();
     log('readProjects OK', { count: (json.projects || []).length, ms: Date.now() - start });
