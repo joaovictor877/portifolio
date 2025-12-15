@@ -339,6 +339,8 @@
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
+    // Persistência de sessão (encerra no fechar do navegador)
+    auth.setPersistence(firebase.auth.Auth.Persistence.SESSION).catch(() => {});
     const db = firebase.firestore();
 
     const loginForm = document.getElementById('loginForm');

@@ -143,7 +143,28 @@
       color: #0a0a0a;
       border: none;
       border-radius: 8px;
+        <!-- Firebase (apenas para checagem de autenticação e logout) -->
+        <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
       cursor: pointer;
+          // Proteção de rota: exige usuário autenticado
+          const firebaseConfig = {
+            apiKey: "AIzaSyALc7xbZ0iwtFRgPECXGWcWB0M8Q2q7Z3E",
+            authDomain: "portfoliodejoao.firebaseapp.com",
+            projectId: "portfoliodejoao",
+            storageBucket: "portfoliodejoao.firebasestorage.app",
+            messagingSenderId: "904540901550",
+            appId: "1:904540901550:web:56d0957f4bf5907174dd3f"
+          };
+          try { firebase.initializeApp(firebaseConfig); } catch {}
+          const auth = firebase.auth();
+
+          // Redireciona para login se não estiver logado
+          auth.onAuthStateChanged((user) => {
+            if (!user) {
+              window.location.href = 'login.html';
+            }
+          });
       font-weight: 600;
       transition: all 0.3s;
     }
@@ -152,9 +173,13 @@
       background: #00e6b0;
       transform: translateY(-2px);
     }
-
-    .tech-tag {
-      display: inline-flex;
+          // Logout real via Firebase + redirect
+          document.getElementById('logoutBtn').addEventListener('click', async () => {
+            try {
+              await auth.signOut();
+            } catch {}
+            window.location.href = 'index.html';
+          });
       align-items: center;
       gap: 0.5rem;
       background: rgba(0, 255, 200, 0.1);
