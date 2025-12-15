@@ -463,6 +463,11 @@
     // Sem autenticação: apenas carrega projetos
     window.addEventListener('DOMContentLoaded', loadProjects);
 
+    // Ajuste do botão de logout: sem auth, apenas volta para home
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      window.location.href = 'index.html';
+    });
+
     // Show message
     function showMessage(text, type = 'success') {
       const msgEl = document.getElementById('message');

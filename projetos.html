@@ -387,7 +387,7 @@
     // Load projects from Firebase
     async function loadProjects() {
       try {
-        const resp = await fetch('/api/projects');
+        const resp = await fetch('/api/projects', { cache: 'no-store' });
         const data = await resp.json();
         const list = (data.projects || []);
 
