@@ -25,7 +25,8 @@ async function writeProjects(data) {
   await put(PROJECTS_KEY, JSON.stringify(data, null, 2), {
     access: 'public',
     contentType: 'application/json',
-    addRandomSuffix: false
+    addRandomSuffix: false,
+    cacheControlMaxAge: 0
   });
 }
 

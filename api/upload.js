@@ -18,7 +18,8 @@ export default async function handler(req, res) {
 
     const blob = await put(key, buffer, {
       access: 'public',
-      contentType: type
+      contentType: type,
+      cacheControlMaxAge: 0
     });
 
     res.status(200).json({ url: blob.url, pathname: blob.pathname });
