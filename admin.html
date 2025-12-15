@@ -461,6 +461,10 @@
     let selectedImageFile = null;
     let projectsCache = [];
 
+    function sortProjectsByDateDesc(list) {
+      return (list || []).slice().sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+    }
+
     // Sem autenticação: apenas carrega projetos
     window.addEventListener('DOMContentLoaded', loadProjects);
 
@@ -591,7 +595,7 @@
         showMessage(editingProjectId ? 'Projeto atualizado com sucesso! ✅' : 'Projeto adicionado com sucesso! ✅');
         resetForm();
         if (savedJson && Array.isArray(savedJson.projects)) {
-          projectsCache = savedJson.projects;
+          projectsCache = sortProjectsByDateDesc(savedJson.projects);
           renderProjects();
         } else {
           await loadProjects();
@@ -619,12 +623,13 @@
 
     function renderProjects() {
       const container = document.getElementById('projectsList');
-      if (!projectsCache.length) {
+      const list = sortProjectsByDateDesc(projectsCache);
+      if (!list.length) {
         container.innerHTML = '<p style="text-align: center; color: #aaa;">Nenhum projeto ainda. Crie seu primeiro! 🚀</p>';
         return;
       }
 
-      container.innerHTML = projectsCache.map(p => `
+      container.innerHTML = list.map(p => `
         <div class="project-item">
           <div class="project-image-preview">
             ${p.imageUrl ? `<img src="${p.imageUrl}" alt="${p.title}">` : '<span style="color: #aaa;">Sem imagem</span>'}
@@ -650,7 +655,7 @@
       try {
         const resp = await fetch(`/api/projects?t=${Date.now()}`, { cache: 'no-store' });
         const data = await resp.json();
-        projectsCache = data.projects || [];
+        projectsCache = sortProjectsByDateDesc(data.projects || []);
         renderProjects();
       } catch (error) {
         console.error('Erro ao carregar projetos:', error);
@@ -698,7 +703,7 @@
           const delJson = await resp.json().catch(() => ({}));
           showMessage('Projeto deletado com sucesso! ✅');
           if (delJson && Array.isArray(delJson.projects)) {
-            projectsCache = delJson.projects;
+            projectsCache = sortProjectsByDateDesc(delJson.projects);
             renderProjects();
           } else {
             await loadProjects();

@@ -390,7 +390,7 @@
       try {
         const resp = await fetch(`/api/projects?t=${Date.now()}`, { cache: 'no-store' });
         const data = await resp.json();
-        const list = (data.projects || []);
+        const list = (data.projects || []).sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
 
         const container = document.getElementById('projectsContainer');
 
