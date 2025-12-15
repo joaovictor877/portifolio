@@ -10,7 +10,8 @@ async function readProjects() {
       // Arquivo não existe, retorna vazio
       return { projects: [] };
     }
-    const resp = await fetch(file.url);
+    // Forçar leitura sem cache do JSON no Blob
+    const resp = await fetch(`${file.url}?t=${Date.now()}`, { cache: 'no-store' });
     if (!resp.ok) return { projects: [] };
     const json = await resp.json();
     return json;
@@ -32,6 +33,11 @@ export default async function handler(req, res) {
   try {
     if (req.method === 'GET') {
       const data = await readProjects();
+      // Evitar cache em CDN/navegador
+      res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('CDN-Cache-Control', 'no-store');
+      res.setHeader('Vercel-CDN-Cache-Control', 'no-store');
       res.status(200).json(data);
       return;
     }
