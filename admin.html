@@ -128,6 +128,19 @@
       margin-top: 0.5rem;
     }
 
+    /* Tech tags (chips) should be green like before */
+    .tech-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(0, 255, 200, 0.1);
+      border: 1px solid #00ffc8;
+      color: #00ffc8;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+    }
+
     .tech-input {
       display: flex;
       gap: 0.5rem;
@@ -143,28 +156,7 @@
       color: #0a0a0a;
       border: none;
       border-radius: 8px;
-        <!-- Firebase (apenas para checagem de autenticação e logout) -->
-        <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-        <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
       cursor: pointer;
-          // Proteção de rota: exige usuário autenticado
-          const firebaseConfig = {
-            apiKey: "AIzaSyALc7xbZ0iwtFRgPECXGWcWB0M8Q2q7Z3E",
-            authDomain: "portfoliodejoao.firebaseapp.com",
-            projectId: "portfoliodejoao",
-            storageBucket: "portfoliodejoao.firebasestorage.app",
-            messagingSenderId: "904540901550",
-            appId: "1:904540901550:web:56d0957f4bf5907174dd3f"
-          };
-          try { firebase.initializeApp(firebaseConfig); } catch {}
-          const auth = firebase.auth();
-
-          // Redireciona para login se não estiver logado
-          auth.onAuthStateChanged((user) => {
-            if (!user) {
-              window.location.href = 'login.html';
-            }
-          });
       font-weight: 600;
       transition: all 0.3s;
     }
@@ -173,13 +165,9 @@
       background: #00e6b0;
       transform: translateY(-2px);
     }
-          // Logout real via Firebase + redirect
-          document.getElementById('logoutBtn').addEventListener('click', async () => {
-            try {
-              await auth.signOut();
-            } catch {}
-            window.location.href = 'index.html';
-          });
+
+    .tech-tag {
+      display: inline-flex;
       align-items: center;
       gap: 0.5rem;
       background: rgba(0, 255, 200, 0.1);
@@ -407,6 +395,42 @@
       }
     }
   </style>
+  
+  <!-- Firebase (apenas para checagem de autenticação e logout) -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script>
+    // Proteção de rota: exige usuário autenticado
+    const firebaseConfig = {
+      apiKey: "AIzaSyALc7xbZ0iwtFRgPECXGWcWB0M8Q2q7Z3E",
+      authDomain: "portfoliodejoao.firebaseapp.com",
+      projectId: "portfoliodejoao",
+      storageBucket: "portfoliodejoao.firebasestorage.app",
+      messagingSenderId: "904540901550",
+      appId: "1:904540901550:web:56d0957f4bf5907174dd3f"
+    };
+    try { firebase.initializeApp(firebaseConfig); } catch (e) { console.log(e); }
+    const auth = firebase.auth();
+
+    // Redireciona para login se não estiver logado
+    auth.onAuthStateChanged((user) => {
+      if (!user) {
+        window.location.href = 'login.html';
+      }
+    });
+
+    // Logout real via Firebase + redirect
+    window.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('logoutBtn').addEventListener('click', async () => {
+        try {
+          await auth.signOut();
+        } catch (e) {
+          console.log(e);
+        }
+        window.location.href = 'index.html';
+      });
+    });
+  </script>
 </head>
 <body>
   <div class="container">
@@ -491,13 +515,8 @@
       return (list || []).slice().sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
     }
 
-    // Sem autenticação: apenas carrega projetos
+    // Carrega projetos ao carregar a página
     window.addEventListener('DOMContentLoaded', loadProjects);
-
-    // Ajuste do botão de logout: sem auth, apenas volta para home
-    document.getElementById('logoutBtn').addEventListener('click', () => {
-      window.location.href = 'index.html';
-    });
 
     // Show message
     function showMessage(text, type = 'success') {
