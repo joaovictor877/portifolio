@@ -409,6 +409,7 @@
               <option value="web">Web</option>
               <option value="backend">Backend</option>
               <option value="mobile">Mobile</option>
+              <option value="arduino">Arduino</option>
             </select>
           </div>
         </div>
@@ -613,7 +614,7 @@
     // Load projects
     async function loadProjects() {
       try {
-        const resp = await fetch('/api/projects');
+        const resp = await fetch('/api/projects', { cache: 'no-store' });
         const data = await resp.json();
         projectsCache = data.projects || [];
 
