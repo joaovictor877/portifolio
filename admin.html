@@ -6,11 +6,7 @@
   <title>Admin - Gerenciar Projetos</title>
   <link rel="icon" type="image/png" href="images/logo-joao.png">
   
-  <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+  <!-- Usando APIs locais (Vercel Blob) em vez de Firebase -->
 
   <style>
     * {
@@ -458,42 +454,14 @@
   </div>
 
   <script>
-    // Firebase Configuration
-    const firebaseConfig = {
-      apiKey: "AIzaSyALc7xbZ0iwtFRgPECXGWcWB0M8Q2q7Z3E",
-      authDomain: "portfoliodejoao.firebaseapp.com",
-      projectId: "portfoliodejoao",
-      storageBucket: "portfoliodejoao.firebasestorage.app",
-      messagingSenderId: "904540901550",
-      appId: "1:904540901550:web:56d0957f4bf5907174dd3f"
-    };
-
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
-    const storage = firebase.storage();
-
-    let currentUser = null;
+    // Estado local
     let editingProjectId = null;
     let techList = [];
     let selectedImageFile = null;
+    let projectsCache = [];
 
-    // Check authentication
-    auth.onAuthStateChanged((user) => {
-      if (!user) {
-        window.location.href = 'login.html';
-      } else {
-        currentUser = user;
-        loadProjects();
-      }
-    });
-
-    // Logout
-    document.getElementById('logoutBtn').addEventListener('click', () => {
-      auth.signOut().then(() => {
-        window.location.href = 'index.html';
-      });
-    });
+    // Sem autenticação: apenas carrega projetos
+    window.addEventListener('DOMContentLoaded', loadProjects);
 
     // Show message
     function showMessage(text, type = 'success') {
@@ -566,6 +534,15 @@
       removeImageBtn.style.display = 'none';
     });
 
+    async function fileToBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result.split(',')[1]);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
     // Form submit
     document.getElementById('projectForm').addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -575,42 +552,38 @@
         description: document.getElementById('description').value,
         category: document.getElementById('category').value,
         tech: techList,
-        userId: currentUser.uid,
-        createdAt: new Date()
+        createdAt: new Date().toISOString()
       };
 
       try {
-        // Upload image if selected (OPTIONAL)
+        // Upload da imagem para Vercel Blob (opcional)
         if (selectedImageFile) {
           try {
-            const timestamp = Date.now();
-            const fileName = `${currentUser.uid}_${timestamp}`;
-            const ref = storage.ref(`projects/${fileName}`);
-            
-            console.log('Iniciando upload de imagem...');
-            const snapshot = await ref.put(selectedImageFile);
-            const imageUrl = await snapshot.ref.getDownloadURL();
-            projectData.imageUrl = imageUrl;
-            console.log('Imagem enviada com sucesso:', imageUrl);
+            const base64 = await fileToBase64(selectedImageFile);
+            const resp = await fetch('/api/upload', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ name: selectedImageFile.name, type: selectedImageFile.type, data: base64 })
+            });
+            const json = await resp.json();
+            if (resp.ok && json.url) projectData.imageUrl = json.url;
           } catch (imgError) {
-            console.warn('Aviso: Imagem não foi enviada, mas projeto será criado', imgError);
-            // NÃO inclui imageUrl se falhar
+            console.warn('Falha ao enviar imagem:', imgError);
           }
         }
 
-        if (editingProjectId) {
-          // Update existing
-          await db.collection('projects').doc(editingProjectId).update(projectData);
-          showMessage('Projeto atualizado com sucesso! ✅');
-          resetForm();
-        } else {
-          // Add new
-          await db.collection('projects').add(projectData);
-          showMessage('Projeto adicionado com sucesso! ✅');
-          resetForm();
-        }
+        const action = editingProjectId ? 'update' : 'create';
+        const body = action === 'update' ? { action, project: { id: editingProjectId, ...projectData } } : { action, project: projectData };
+        const saveResp = await fetch('/api/projects', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        });
+        if (!saveResp.ok) throw new Error('Falha ao salvar projeto');
 
-        loadProjects();
+        showMessage(editingProjectId ? 'Projeto atualizado com sucesso! ✅' : 'Projeto adicionado com sucesso! ✅');
+        resetForm();
+        await loadProjects();
       } catch (error) {
         console.error('Erro:', error);
         showMessage('Erro ao salvar projeto: ' + error.message, 'error');
@@ -635,39 +608,35 @@
     // Load projects
     async function loadProjects() {
       try {
-        const snapshot = await db.collection('projects')
-          .where('userId', '==', currentUser.uid)
-          .get();
+        const resp = await fetch('/api/projects');
+        const data = await resp.json();
+        projectsCache = data.projects || [];
 
         const container = document.getElementById('projectsList');
-
-        if (snapshot.empty) {
+        if (!projectsCache.length) {
           container.innerHTML = '<p style="text-align: center; color: #aaa;">Nenhum projeto ainda. Crie seu primeiro! 🚀</p>';
           return;
         }
 
-        container.innerHTML = snapshot.docs.map(doc => {
-          const data = doc.data();
-          return `
-            <div class="project-item">
-              <div class="project-image-preview">
-                ${data.imageUrl ? `<img src="${data.imageUrl}" alt="${data.title}">` : '<span style="color: #aaa;">Sem imagem</span>'}
-              </div>
-              <div class="project-info">
-                <h3>${data.title}</h3>
-                <p>${data.description}</p>
-                <p><strong>Categoria:</strong> ${data.category}</p>
-                <div class="project-tech">
-                  ${data.tech.map(t => `<span class="tech-badge">${t}</span>`).join('')}
-                </div>
-              </div>
-              <div class="project-actions">
-                <button class="btn-edit" onclick="editProject('${doc.id}')">Editar</button>
-                <button class="btn-delete" onclick="deleteProject('${doc.id}')">Deletar</button>
+        container.innerHTML = projectsCache.map(p => `
+          <div class="project-item">
+            <div class="project-image-preview">
+              ${p.imageUrl ? `<img src="${p.imageUrl}" alt="${p.title}">` : '<span style="color: #aaa;">Sem imagem</span>'}
+            </div>
+            <div class="project-info">
+              <h3>${p.title}</h3>
+              <p>${p.description}</p>
+              <p><strong>Categoria:</strong> ${p.category}</p>
+              <div class="project-tech">
+                ${(p.tech || []).map(t => `<span class="tech-badge">${t}</span>`).join('')}
               </div>
             </div>
-          `;
-        }).join('');
+            <div class="project-actions">
+              <button class="btn-edit" onclick="editProject('${p.id}')">Editar</button>
+              <button class="btn-delete" onclick="deleteProject('${p.id}')">Deletar</button>
+            </div>
+          </div>
+        `).join('');
       } catch (error) {
         console.error('Erro ao carregar projetos:', error);
         showMessage('Erro ao carregar projetos', 'error');
@@ -676,9 +645,8 @@
 
     async function editProject(projectId) {
       try {
-        const doc = await db.collection('projects').doc(projectId).get();
-        const data = doc.data();
-
+        const data = projectsCache.find(p => p.id === projectId);
+        if (!data) return;
         document.getElementById('title').value = data.title;
         document.getElementById('description').value = data.description;
         document.getElementById('category').value = data.category;
@@ -706,9 +674,14 @@
     async function deleteProject(projectId) {
       if (confirm('Tem certeza que deseja deletar este projeto?')) {
         try {
-          await db.collection('projects').doc(projectId).delete();
+          const resp = await fetch('/api/projects', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'delete', id: projectId })
+          });
+          if (!resp.ok) throw new Error('Falha ao deletar');
           showMessage('Projeto deletado com sucesso! ✅');
-          loadProjects();
+          await loadProjects();
         } catch (error) {
           console.error('Erro:', error);
           showMessage('Erro ao deletar projeto', 'error');

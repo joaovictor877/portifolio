@@ -8,9 +8,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
   
-  <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <!-- Sem Firebase: dados virão de /api/projects -->
   
   <style>
     * {
@@ -385,39 +383,24 @@
 
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
   <script>
-    // Firebase Configuration
-    const firebaseConfig = {
-      apiKey: "AIzaSyALc7xbZ0iwtFRgPECXGWcWB0M8Q2q7Z3E",
-      authDomain: "portfoliodejoao.firebaseapp.com",
-      projectId: "portfoliodejoao",
-      storageBucket: "portfoliodejoao.firebasestorage.app",
-      messagingSenderId: "904540901550",
-      appId: "1:904540901550:web:56d0957f4bf5907174dd3f"
-    };
-
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-    // Mostrar apenas os projetos do dono do portfólio
-    const OWNER_UID = 's1fKvGbss3YKFuOKoWaktCW6oS42';
 
     // Load projects from Firebase
     async function loadProjects() {
       try {
-        const snapshot = await db.collection('projects')
-          .where('userId', '==', OWNER_UID)
-          .get();
+        const resp = await fetch('/api/projects');
+        const data = await resp.json();
+        const list = (data.projects || []);
 
         const container = document.getElementById('projectsContainer');
 
-        if (snapshot.empty) {
+        if (!list.length) {
           container.innerHTML = '<p style="text-align: center; color: #aaa; padding: 2rem;">Nenhum projeto disponível no momento.</p>';
           return;
         }
 
         // Create projects HTML
         let projectsHTML = '';
-        snapshot.forEach(doc => {
-          const project = doc.data();
+        list.forEach(project => {
           
           // Validar se projeto tem dados completos
           if (!project.title || !project.description || !project.category) {
