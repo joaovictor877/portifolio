@@ -1,22 +1,33 @@
 import { list, put } from '@vercel/blob';
 
 const PROJECTS_KEY = 'data/projects.json';
+const LOG = process.env.LOG_API !== '0';
+
+function log(...args) {
+  if (LOG) console.log('[projects]', ...args);
+}
+function logError(...args) {
+  if (LOG) console.error('[projects][error]', ...args);
+}
 
 async function readProjects() {
   try {
+    const start = Date.now();
     const { blobs } = await list({ prefix: 'data/' });
     const file = blobs.find(b => b.pathname === PROJECTS_KEY);
     if (!file) {
       // Arquivo não existe, retorna vazio
+      log('readProjects: arquivo inexistente, retornando lista vazia');
       return { projects: [] };
     }
     // Forçar leitura sem cache do JSON no Blob
     const resp = await fetch(`${file.url}?t=${Date.now()}`, { cache: 'no-store' });
     if (!resp.ok) return { projects: [] };
     const json = await resp.json();
+    log('readProjects OK', { count: (json.projects || []).length, ms: Date.now() - start });
     return json;
   } catch (err) {
-    console.warn('readProjects error, returning empty:', err);
+    logError('readProjects error, returning empty:', err);
     return { projects: [] };
   }
 }
@@ -33,12 +44,14 @@ async function writeProjects(data) {
 export default async function handler(req, res) {
   try {
     if (req.method === 'GET') {
+      const start = Date.now();
       const data = await readProjects();
       // Evitar cache em CDN/navegador
       res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
       res.setHeader('Pragma', 'no-cache');
       res.setHeader('CDN-Cache-Control', 'no-store');
       res.setHeader('Vercel-CDN-Cache-Control', 'no-store');
+      log('GET /api/projects', { count: (data.projects || []).length, ms: Date.now() - start });
       res.status(200).json(data);
       return;
     }
@@ -57,6 +70,7 @@ export default async function handler(req, res) {
         const newProject = { id, ...project };
         data.projects.unshift(newProject);
         await writeProjects(data);
+        log('POST create', { id, count: data.projects.length });
         res.status(200).json({ ok: true, id, projects: data.projects });
         return;
       }
@@ -66,6 +80,7 @@ export default async function handler(req, res) {
         if (!id) return res.status(400).json({ error: 'Missing id' });
         data.projects = data.projects.map(p => (p.id === id ? { ...p, ...project } : p));
         await writeProjects(data);
+        log('POST update', { id, count: data.projects.length });
         res.status(200).json({ ok: true, projects: data.projects });
         return;
       }
@@ -75,6 +90,7 @@ export default async function handler(req, res) {
         if (!id) return res.status(400).json({ error: 'Missing id' });
         data.projects = data.projects.filter(p => p.id !== id);
         await writeProjects(data);
+        log('POST delete', { id, count: data.projects.length });
         res.status(200).json({ ok: true, projects: data.projects });
         return;
       }
@@ -85,7 +101,7 @@ export default async function handler(req, res) {
 
     res.status(405).json({ error: 'Method not allowed' });
   } catch (err) {
-    console.error('projects API error:', err);
+    logError('projects API error:', err);
     res.status(500).json({ error: 'Server error', details: String(err) });
   }
 }
