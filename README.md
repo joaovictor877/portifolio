@@ -1,6 +1,6 @@
 # 🎨 Portfólio de João Victor
 
-Portfólio profissional dinâmico desenvolvido com HTML5, CSS3, JavaScript e **Firebase**, apresentando projetos em tempo real com autenticação e painel administrativo.
+Portfólio profissional dinâmico desenvolvido com HTML5, CSS3, JavaScript, **Firebase** (autenticação) e **Vercel Blob** (armazenamento), apresentando projetos em tempo real com painel administrativo robusto.
 
 **Live Demo:** [joaovictor.app.br](https://joaovictor.app.br)
 
@@ -24,15 +24,16 @@ Portfólio profissional dinâmico desenvolvido com HTML5, CSS3, JavaScript e **F
 ## ✨ Características
 
 ✅ **Homepage Responsiva** - Seções de hero, sobre, skills, educação e contato  
-✅ **Projetos Dinâmicos** - Sincronização em tempo real com Firestore  
-✅ **Carrossel de Imagens** - Navegação fluida com Swiper.js  
-✅ **Filtros por Categoria** - Exibição de projetos por tipo (Web, Backend, Mobile)  
-✅ **Autenticação Firebase** - Email/Password + Google OAuth  
-✅ **Painel Administrativo** - CRUD completo para gerenciar projetos  
-✅ **Upload de Imagens** - Firebase Storage com sincronização automática  
+✅ **Projetos Dinâmicos** - Carregamento via APIs serverless com cache otimizado  
+✅ **Carrossel de Imagens** - Navegação fluida com Swiper.js e suporte a múltiplas imagens  
+✅ **Filtros por Categoria** - Exibição de projetos por tipo (Web, Backend, Mobile, Arduino)  
+✅ **Autenticação Firebase** - Email/Password com reset de senha  
+✅ **Painel Administrativo** - CRUD completo com upload múltiplo de imagens  
+✅ **Armazenamento Vercel Blob** - Projetos JSON e imagens em object storage serverless  
+✅ **APIs Serverless** - `/api/projects` e `/api/upload` para gerenciamento  
 ✅ **Design Dark Theme** - Interface moderna com gradientes ciano-azul  
-✅ **URLs Limpas** - Sem extensões `.html` (`.htaccess` + rewrite)  
-✅ **Segurança** - Regras de Firestore e Storage para proteção de dados  
+✅ **URLs Limpas** - Rewrite via Vercel  
+✅ **Cache Otimizado** - Headers no-store e timestamp para consistência de dados  
 
 ---
 
@@ -46,9 +47,13 @@ Portfólio profissional dinâmico desenvolvido com HTML5, CSS3, JavaScript e **F
 
 ### Backend & Serviços
 - **Firebase 9.22.0**
-  - 🔐 **Authentication** - Email/Password + Google OAuth
-  - 🗄️ **Firestore Database** - NoSQL cloud database
-  - 📦 **Cloud Storage** - Armazenamento de imagens
+  - 🔐 **Authentication** - Email/Password com "Esqueci a Senha"
+  - 📧 **Password Reset** - Recuperação de conta via email
+  
+- **Vercel Blob**
+  - 📦 **Object Storage** - Projetos JSON e imagens em blob storage serverless
+  - ⚡ **APIs Serverless** - `/api/projects` (CRUD) e `/api/upload` (imagens)
+  - 🔄 **Cache Control** - Headers otimizados para consistência
   
 ### Deployment
 - **GitHub** - Versionamento de código
@@ -62,17 +67,19 @@ Portfólio profissional dinâmico desenvolvido com HTML5, CSS3, JavaScript e **F
 ```
 portifolio/
 ├── index.html              # 🏠 Página inicial (hero, about, skills, educação)
-├── projetos.html           # 📋 Galeria dinâmica de projetos
-├── login.html              # 🔓 Login para visitantes
-├── login-admin.html        # 🔐 Login para administradores
-├── admin.html              # ⚙️ Painel CRUD para gerenciar projetos
-├── firebase-config.js      # 🔑 Configuração Firebase (pode estar inline)
+├── projetos.html           # 📋 Galeria dinâmica de projetos (fetch /api/projects)
+├── admin.html              # ⚙️ Painel CRUD com autenticação Firebase
+├── login.html              # 🔓 Login unificado (Email/Password + Reset)
+├── firebase-config.js      # 🔑 Configuração Firebase
 ├── style.css               # 🎨 Estilos globais
 ├── script.js               # ⚡ Scripts globais
-├── .htaccess               # 🔄 Rewrite para URLs limpas
-├── vercel.json             # ▲ Configuração Vercel
+├── package.json            # 📦 Dependências (minimal)
+├── vercel.json             # ▲ Configuração Vercel (rewrite, headers, redirects)
+├── api/                    # 🖥️ APIs Serverless
+│   ├── projects.js         # GET/POST projetos JSON em Vercel Blob
+│   └── upload.js           # POST imagens base64 em Vercel Blob
 ├── README.md               # 📖 Este arquivo
-└── images/                 # 🖼️ Imagens estáticas
+└── images/                 # 🖼️ Imagens estáticas do site
 ```
 
 ---
@@ -96,12 +103,12 @@ cd portifolio
 
 1. Acesse [Firebase Console](https://console.firebase.google.com/)
 2. Crie um novo projeto ou use "portfoliodejoao"
-3. Configure os seguintes serviços:
+3. Configure:
 
 #### Authentication
 ```
 ✅ Email/Password - Habilitado
-✅ Google - Habilitado (adicionar domínios autorizados)
+✅ Password Reset - Habilitado (envia email de recuperação)
 ```
 
 **Domínios Autorizados:**
@@ -109,66 +116,48 @@ cd portifolio
 - `joaovictor.app.br` (produção)
 - Seu domínio custom
 
-#### Firestore Database
-Criar coleção `projects` com documentos contendo:
-```javascript
-{
-  title: "Nome do Projeto",
-  description: "Descrição detalhada",
-  category: "Web", // Web, Backend, Mobile
-  tech: ["React", "Firebase", "Vercel"],
-  userId: "user-id-do-admin",
-  createdAt: timestamp,
-  imageUrl: "url-da-imagem-no-storage"
-}
+### 3️⃣ Configurar Vercel Blob
+
+1. Conecte seu repositório GitHub ao [Vercel](https://vercel.com)
+2. No Vercel Dashboard, vá em **Settings → Blob**
+3. Crie um novo blob store (ex: `portfolio-storage`)
+4. Configure a variável de ambiente no projeto Vercel:
+
+```bash
+BLOB_READ_WRITE_TOKEN=seu_token_aqui
 ```
 
-**Regras de Segurança:**
+**Dados armazenados em Vercel Blob:**
+- `data/projects.json` - Array de projetos com estrutura:
 ```javascript
-rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    // Projetos: Qualquer um lê, só autenticado cria/edita
-    match /projects/{document=**} {
-      allow read: if true;
-      allow create, update, delete: if request.auth != null;
-    }
+[
+  {
+    id: "uuid-ou-timestamp",
+    title: "Nome do Projeto",
+    description: "Descrição detalhada",
+    category: "Web",
+    tech: ["React", "Firebase", "Vercel"],
+    imageUrl: "https://blob.vercelusercontent.com/...",
+    imageUrls: ["url1", "url2", "url3"], // Suporte a múltiplas imagens
+    createdAt: "2025-12-18T10:30:00Z"
   }
-}
+]
+```
+- `data/images/{timestamp}-{nome}` - Imagens em base64 convertidas
 ```
 
-#### Cloud Storage
-**Regras de Segurança:**
-```javascript
-rules_version = '2';
-service firebase.storage {
-  match /b/{bucket}/o {
-    match /projects/{allPaths=**} {
-      allow read: if true;
-      allow create, update, delete: if request.auth != null;
-    }
-  }
-}
-```
+### 4️⃣ Configurar as APIs Serverless
 
-### 3️⃣ Configurar as APIs
+As APIs estão em `/api/` e lidam com leitura/escrita no Vercel Blob:
 
-Adicione as credenciais Firebase em cada HTML (já inclusas):
+**`/api/projects.js`** - Gerencia dados dos projetos:
+- `GET` - Retorna `projects.json` do Blob com cache otimizado
+- `POST` - Ações: `create` (novo projeto), `update` (editar), `delete` (remover)
 
-```javascript
-const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "portfoliodejoao.firebaseapp.com",
-  projectId: "portfoliodejoao",
-  storageBucket: "portfoliodejoao.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
-};
+**`/api/upload.js`** - Gerencia upload de imagens:
+- `POST` - Recebe base64 da imagem e salva no Blob com nome único
 
-firebase.initializeApp(firebaseConfig);
-```
-
-### 4️⃣ Testar Localmente
+### 5️⃣ Testar Localmente
 
 ```bash
 # Opção 1: Usar Live Server no VS Code
@@ -183,6 +172,8 @@ npx http-server -p 3000
 
 Acesse: `http://localhost:3000` ou `http://localhost:8000`
 
+**Nota:** As APIs `/api/projects` e `/api/upload` só funcionarão quando deployadas no Vercel (local terá CORS errors).
+
 ---
 
 ## 📖 Uso
@@ -190,15 +181,15 @@ Acesse: `http://localhost:3000` ou `http://localhost:8000`
 ### 👨‍💼 Para Visitantes
 
 1. **Homepage** - Veja informações sobre João Victor
-2. **Projetos** - Navegue pelos projetos com carrosséis de imagens
-3. **Filtros** - Filtre por categoria (Todos, Web, Backend, Mobile)
+2. **Projetos** - Navegue pelos projetos com carrosséis de imagens (carregadas de Vercel Blob)
+3. **Filtros** - Filtre por categoria (Todos, Web, Backend, Mobile, Arduino, Projeto)
 4. **Contato** - Links diretos para Gmail, LinkedIn, GitHub
 
 ### 🔐 Para Administradores
 
-1. **Acesse** `joaovictor.app.br/login-admin` (ou `/login-admin.html` em dev)
-2. **Faça login** com suas credenciais Firebase
-3. **Acesse o painel** em `/admin` (ou `admin.html`)
+1. **Acesse** `joaovictor.app.br/login` (Login unificado)
+2. **Faça login** com email/senha (Firebase Auth)
+3. **Acesse o painel** em `joaovictor.app.br/admin` (ou `/admin.html` local)
 
 ---
 
@@ -210,34 +201,31 @@ Acesse: `http://localhost:3000` ou `http://localhost:8000`
 // Login
 auth.signInWithEmailAndPassword(email, password)
   .then(userCredential => {
-    window.location.href = 'index.html'; // ou admin.html
+    window.location.href = 'admin.html'; // Redireciona para admin
   })
   .catch(error => console.error(error.message));
-
-// Criar conta
-auth.createUserWithEmailAndPassword(email, password)
-  .then(userCredential => {
-    // Usuário criado com sucesso
-  });
 ```
 
-### 🔵 Google OAuth
+### 🔑 Reset de Senha
 
 ```javascript
-const googleProvider = new firebase.auth.GoogleAuthProvider();
-auth.signInWithPopup(googleProvider)
-  .then(result => {
-    window.location.href = 'admin.html';
-  });
+// Enviar email de recuperação
+auth.sendPasswordResetEmail(email)
+  .then(() => {
+    alert('Email de recuperação enviado!');
+  })
+  .catch(error => console.error(error.message));
 ```
 
 ### Logout
 
 ```javascript
 auth.signOut().then(() => {
-  window.location.href = 'login.html';
+  window.location.href = 'index.html';
 });
 ```
+
+**Nota:** Autenticação com Firebase é obrigatória para acessar o painel admin. Session persistence é definida como `SESSION` (não persiste entre abas).
 
 ---
 
@@ -247,52 +235,73 @@ auth.signOut().then(() => {
 
 **Adicionar Projeto:**
 - ✏️ Título, Descrição, Categoria
-- 🏷️ Tags de tecnologia (array dinâmico)
-- 🖼️ Upload de imagem para Firebase Storage
-- 💾 Salvar automaticamente no Firestore
+- 🏷️ Tags de tecnologia (chips verdes dinâmicas)
+- 🖼️ Upload de múltiplas imagens para Vercel Blob
+- 💾 Salvar para `/api/projects` (JSON + imagens)
 
 **Editar Projeto:**
 - ✏️ Atualizar todos os campos
-- 🖼️ Alterar imagem
-- 💾 Sincronização em tempo real
+- 🖼️ Alterar ou adicionar imagens
+- 💾 Sincronização imediata via API
 
 **Deletar Projeto:**
-- 🗑️ Remover do Firestore
-- 🗑️ Remover imagem do Storage
+- 🗑️ Remover do `projects.json`
+- 🗑️ Remover imagens do Blob
 
 **Listar Projetos:**
-- 📋 Exibição em tempo real
-- 🔍 Busca rápida
+- 📋 Exibição em tempo real (ordenada por data de criação)
+- 🖼️ Preview com primeira imagem do projeto
 - 📱 Interface responsiva
 
 ---
 
 ## 🔒 Segurança
 
-### 🛡️ Firestore Rules
-- ✅ Leitura pública para todos (projetos visíveis)
-- 🔐 Escrita apenas para usuários autenticados
-- 👤 Cada admin gerencia seus próprios projetos
+### 🛡️ Firebase Authentication
+- ✅ Email/Password habilitado
+- 🔐 Password reset via email seguro
+- 📧 Emails de recuperação com links verificados
+- 🔒 Admin requer autenticação (guarda de rota no `admin.html`)
 
-### 🛡️ Storage Rules
-- ✅ Leitura pública (imagens visíveis)
-- 🔐 Upload apenas para autenticados
-- 📝 Caminho: `projects/{fileName}`
+### 🛡️ Vercel Blob Access
+- ✅ Leitura pública para `data/projects.json` (imagens do site público)
+- 🔐 Escrita (POST) com `BLOB_READ_WRITE_TOKEN` de ambiente
+- 🔑 Token armazenado de forma segura no Vercel (não versionado em git)
 
-### 🛡️ Environment Variables
-- 🔑 API keys não devem ser expostas em produção
-- ✅ Firebase config pode estar segura (public config, private keys via backend)
-- 📦 Usar Vercel Environment Variables para dados sensíveis
+### 🛡️ APIs Serverless
+- ✅ `/api/projects` com headers `no-store` para evitar cache agressivo
+- ✅ `/api/upload` valida e sanitiza base64 antes de salvar
+- 🔐 Ambas as APIs requerem autenticação (verificado no lado do cliente)
+
+### 🛡️ Headers de Segurança (vercel.json)
+```json
+{
+  "headers": [
+    {
+      "source": "/api/projects",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-store, must-revalidate" },
+        { "key": "CDN-Cache-Control", "value": "no-store" }
+      ]
+    }
+  ]
+}
+```
 
 ---
 
 ## 🚀 Deployment
 
-### Opção 1: Vercel (Recomendado)
+### Opção 1: Vercel (Recomendado e Obrigatório para APIs)
+
+Seu portfólio usa APIs serverless que **só funcionam no Vercel**. Deployment no Vercel é obrigatório.
 
 ```bash
 # Instalar Vercel CLI
 npm install -g vercel
+
+# Fazer login
+vercel login
 
 # Deploy
 vercel
@@ -300,10 +309,18 @@ vercel
 
 Ou conecte diretamente no [Vercel Dashboard](https://vercel.com):
 1. Importar repositório GitHub
-2. Configurar Environment Variables (se necessário)
-3. Deploy automático em cada push para `main`
+2. Configurar variáveis de ambiente:
+   - `BLOB_READ_WRITE_TOKEN` - Token de acesso ao Vercel Blob
+3. Configurar Firebase config (já em inline nos HTMLs)
+4. Deploy automático em cada push para `main`
 
-### Opção 2: Configurar Domínio Custom
+### Variáveis de Ambiente no Vercel
+
+```
+BLOB_READ_WRITE_TOKEN=seu_token_do_vercel_blob
+```
+
+Não coloque o token no arquivo `.env` do repositório (nunca fazer commit de secrets).
 
 1. **Registre seu domínio** (joaovictor.app.br)
 2. **No Vercel Dashboard:**
@@ -319,12 +336,7 @@ Ou conecte diretamente no [Vercel Dashboard](https://vercel.com):
    ```
 4. **Aguarde propagação** (até 24h)
 
-### Opção 3: GitHub Pages
-
-```bash
-# Se preferir usar GitHub Pages ao invés de Vercel
-# Ativar em Settings → Pages → Source: main branch
-```
+### Opção 2: Configurar Domínio Custom no Vercel
 
 ---
 
@@ -343,40 +355,74 @@ Ou conecte diretamente no [Vercel Dashboard](https://vercel.com):
 ### ❌ "Unauthorized domain" ao fazer login
 **Solução:** Adicione seu domínio em Firebase Console → Authentication → Authorized domains
 
+### ❌ Projetos não carregam na página pública
+**Solução:** Verifique se:
+- `/api/projects` está deployada no Vercel
+- `BLOB_READ_WRITE_TOKEN` está configurado
+- Arquivo `data/projects.json` existe no Vercel Blob
+
 ### ❌ Imagens não carregam
-**Solução:** Verifique as regras de Firebase Storage permitem read público
+**Solução:** Verifique se:
+- URLs das imagens em `projects.json` estão corretas
+- Imagens foram enviadas para Vercel Blob via `/api/upload`
+- CORS headers estão corretos (devem estar por padrão no Blob)
 
-### ❌ Firestore query muito lenta
-**Solução:** Crie índices compostos conforme sugerido pelo Firebase Console
+### ❌ Admin não permite login
+**Solução:** Verifique se:
+- Firebase config está correta em `login.html`
+- Usuário existe em Firebase Authentication
+- Domínio está autorizado em Firebase
 
-### ❌ Erro de CORS ao fazer upload
-**Solução:** Atualize Storage rules para permitir autenticados:
-```javascript
-allow create, update, delete: if request.auth != null;
+### ❌ 404 ao acessar `/admin` ou `/projetos`
+**Solução:** Vercel rewrite está configurado em `vercel.json`:
+```json
+{
+  "rewrites": [
+    { "source": "/admin", "destination": "/admin.html" },
+    { "source": "/projetos", "destination": "/projetos.html" }
+  ]
+}
 ```
 
 ---
 
 ## 📝 Variáveis de Ambiente
 
-Se usar Vercel com variáveis de ambiente:
+### Vercel Blob
 
 ```
-VITE_FIREBASE_API_KEY=seu_api_key
-VITE_FIREBASE_AUTH_DOMAIN=seu_auth_domain
-VITE_FIREBASE_PROJECT_ID=seu_project_id
-VITE_FIREBASE_STORAGE_BUCKET=seu_storage_bucket
-VITE_FIREBASE_MESSAGING_SENDER_ID=seu_sender_id
-VITE_FIREBASE_APP_ID=seu_app_id
+BLOB_READ_WRITE_TOKEN=seu_token_do_vercel_blob
 ```
+
+**Como gerar o token:**
+1. Vercel Dashboard → Blob → Seu projeto
+2. Copie "Read Write Token"
+3. Adicione em Project Settings → Environment Variables
+
+### Firebase Config
+
+Firebase config está **inline nos HTMLs** (é seguro, não contém secrets):
+```javascript
+const firebaseConfig = {
+  apiKey: "AIzaSy...",
+  authDomain: "portfoliodejoao.firebaseapp.com",
+  projectId: "portfoliodejoao",
+  storageBucket: "portfoliodejoao.firebasestorage.app",
+  messagingSenderId: "904540901550",
+  appId: "1:904540901550:web:56d0957f4bf5907174dd3f"
+};
+```
+
+⚠️ **Nunca faça commit de `BLOB_READ_WRITE_TOKEN`** em .env ou variáveis sensíveis no git.
 
 ---
 
 ## 📚 Recursos Úteis
 
 - 📖 [Firebase Docs](https://firebase.google.com/docs)
-- 🎨 [Swiper.js Documentation](https://swiperjs.com/react)
+- 🎨 [Swiper.js Documentation](https://swiperjs.com/)
 - 🚀 [Vercel Docs](https://vercel.com/docs)
+- 📦 [Vercel Blob Storage](https://vercel.com/docs/storage/vercel-blob)
 - 🔐 [Web Security Best Practices](https://owasp.org)
 
 ---
@@ -411,9 +457,8 @@ git push origin feature/melhoria
 ---
 
 **Última atualização:** Dezembro 2025  
-**Status:** ✅ Completo e em produção
-
-Modificação 12/12
+**Status:** ✅ Completo e em produção  
+**Stack:** HTML5, CSS3, JavaScript, Firebase Auth, Vercel Blob, Swiper.js
 
 **- Add:** Efeito RGB Animado
 
