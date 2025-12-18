@@ -1,6 +1,6 @@
 # 🎨 Portfólio de João Victor
 
-Portfólio profissional dinâmico desenvolvido com HTML5, CSS3, JavaScript e **Firebase**, apresentando projetos em tempo real com autenticação e painel administrativo.
+Portfólio profissional dinâmico desenvolvido com HTML5, CSS3, JavaScript e Blob, apresentando projetos em tempo real com autenticação e painel administrativo.
 
 **Live Demo:** [joaovictor.app.br](https://joaovictor.app.br)
 
